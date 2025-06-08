@@ -142,6 +142,7 @@ fun LoginScreen() {
             Spacer(modifier = Modifier.height(24.dp))
             TextButton(
                 onClick = {},
+                enabled = false,
                 modifier = Modifier.align(Alignment.CenterHorizontally)
             ) {
                 Row {
@@ -209,7 +210,7 @@ fun TextFieldBox(
         },
         shape = RoundedCornerShape(12.dp),
         modifier = Modifier.fillMaxWidth(),
-        textStyle = Typography.bodyMedium,
+        textStyle = Typography.bodyLarge,
         colors = androidx.compose.material.TextFieldDefaults.outlinedTextFieldColors(
             backgroundColor = BoxGray,
             focusedBorderColor = Pink,
