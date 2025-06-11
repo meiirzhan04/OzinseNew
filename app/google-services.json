@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "971423604125",
+    "project_id": "ozinsenew",
+    "storage_bucket": "ozinsenew.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:971423604125:android:f4f00b9f4a029605512374",
+        "android_client_info": {
+          "package_name": "com.example.ozinsenew"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAUAb5CleNyQNRpzNbl1MGVVDXHaQu3zic"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

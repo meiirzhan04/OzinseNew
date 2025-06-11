@@ -1,4 +1,4 @@
-package com.example.ozinsenew.presentation.home
+package com.example.ozinsenew.presentation.start
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.Image

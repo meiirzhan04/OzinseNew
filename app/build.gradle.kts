@@ -1,3 +1,5 @@
+import org.gradle.kotlin.dsl.implementation
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -7,6 +9,8 @@ plugins {
     id("kotlin-kapt")
     id("kotlin-android")
     kotlin("kapt")
+    alias(libs.plugins.google.gms.google.services)/*
+    id("com.google.gms.google-services")*/
 }
 
 android {
@@ -45,8 +49,10 @@ android {
 }
 
 dependencies {
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.10.2")
     implementation("androidx.room:room-runtime:2.7.1")
     implementation("androidx.room:room-ktx:2.7.1")
+    implementation(libs.firebase.firestore)
     kapt("androidx.room:room-compiler:2.7.1")
     implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
     implementation ("com.google.accompanist:accompanist-pager:0.33.2-alpha")
@@ -65,7 +71,9 @@ dependencies {
     implementation ("com.squareup.retrofit2:converter-gson:2.9.0")
     implementation ("androidx.lifecycle:lifecycle-viewmodel-ktx:2.9.1")
     implementation ("androidx.lifecycle:lifecycle-livedata-ktx:2.9.1")
-    implementation("androidx.datastore:datastore-preferences:1.1.7")
+    implementation("com.google.firebase:firebase-auth-ktx:23.2.1")
+    implementation("androidx.datastore:datastore-preferences:1.1.7")/*
+    implementation ("com.google.firebase:firebase-auth-ktx:31.2.0")*/
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)

@@ -2,6 +2,7 @@ package com.example.ozinsenew.presentation.login
 
 //noinspection UsingMaterialAndMaterial3Libraries
 //noinspection UsingMaterialAndMaterial3Libraries
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -32,23 +33,38 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.example.ozinsenew.R
+import com.example.ozinsenew.navigation.Screen
 import com.example.ozinsenew.ui.theme.Background
 import com.example.ozinsenew.ui.theme.BorderGray
 import com.example.ozinsenew.ui.theme.BoxGray
 import com.example.ozinsenew.ui.theme.DarkGray
+import com.example.ozinsenew.ui.theme.ErrorRed
 import com.example.ozinsenew.ui.theme.Gray
 import com.example.ozinsenew.ui.theme.Pink
 import com.example.ozinsenew.ui.theme.TextPink
 import com.example.ozinsenew.ui.theme.Typography
 import com.example.ozinsenew.ui.theme.White
+import com.example.ozinsenew.viewmodels.ViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LoginScreen() {
+fun LoginScreen(
+    viewModel: ViewModel,
+    navController: NavController
+) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    var isSee by remember { mutableStateOf(false) }
+    val isClicked = remember { mutableStateOf(false) }
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -76,7 +92,7 @@ fun LoginScreen() {
                 .fillMaxSize()
                 .background(Background)
                 .padding(innerPadding)
-                .padding(24.dp),
+                .padding(horizontal = 24.dp),
         ) {
             Text(
                 text = "Сәлем",
@@ -98,9 +114,19 @@ fun LoginScreen() {
                 },
                 image = R.drawable.ic_message,
                 placeholder = "Сіздің email",
-                isTrue = false
+                isTrue = false,
+                isError = isClicked.value && !isValidEmail(email) && email.isNotEmpty() && password.isNotEmpty(),
+                onClick = {}
             )
             Spacer(modifier = Modifier.height(16.dp))
+            if (isClicked.value && !isValidEmail(email) && email.isNotEmpty() && password.isNotEmpty()) {
+                Text(
+                    text = "Қате формат",
+                    color = ErrorRed,
+                    style = Typography.bodySmall,
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+            }
             TextFieldBox(
                 text = "Құпия сөз",
                 email = password,
@@ -109,7 +135,11 @@ fun LoginScreen() {
                 },
                 image = R.drawable.ic_passwrod,
                 placeholder = "Сіздің құпия сөзіңіз",
-                isTrue = true
+                isTrue = true,
+                visualTransformation = if (isSee) VisualTransformation.None else PasswordVisualTransformation(),
+                onClick = {
+                    isSee = !isSee
+                }
             )
             Spacer(modifier = Modifier.height(16.dp))
             TextButton(
@@ -125,7 +155,24 @@ fun LoginScreen() {
             }
             Spacer(modifier = Modifier.height(40.dp))
             Button(
-                onClick = {},
+                onClick = {
+                    isClicked.value = true
+                    if (email.isEmpty() || password.isEmpty()) {
+                        Toast.makeText(navController.context, "Not Found", Toast.LENGTH_SHORT).show()
+                        return@Button
+                    } else {
+                        viewModel.login(email, password)
+                        if (viewModel.isAuthenticated) {
+                            navController.navigate(Screen.RegisterScreen)
+                        } else {
+                            Toast.makeText(
+                                navController.context,
+                                viewModel.errorMessage,
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    }
+                },
                 shape = RoundedCornerShape(12.dp),
                 modifier = Modifier.fillMaxWidth(),
                 colors = ButtonDefaults.buttonColors(
@@ -141,8 +188,9 @@ fun LoginScreen() {
             }
             Spacer(modifier = Modifier.height(24.dp))
             TextButton(
-                onClick = {},
-                enabled = false,
+                onClick = {
+                    navController.navigate(Screen.RegisterScreen)
+                },
                 modifier = Modifier.align(Alignment.CenterHorizontally)
             ) {
                 Row {
@@ -177,9 +225,7 @@ fun LoginScreen() {
                 onClick = {},
                 text = "Google"
             )
-
         }
-
     }
 }
 
@@ -190,7 +236,11 @@ fun TextFieldBox(
     placeholder: String,
     onValueChange: (String) -> Unit,
     image: Int,
-    isTrue: Boolean = false
+    isTrue: Boolean = false,
+    isError: Boolean = false,
+    visualTransformation: VisualTransformation = VisualTransformation.None,
+    isSee: Boolean = false,
+    onClick: () -> Unit
 ) {
     Text(
         text = text,
@@ -213,8 +263,8 @@ fun TextFieldBox(
         textStyle = Typography.bodyLarge,
         colors = androidx.compose.material.TextFieldDefaults.outlinedTextFieldColors(
             backgroundColor = BoxGray,
-            focusedBorderColor = Pink,
-            unfocusedBorderColor = BorderGray,
+            focusedBorderColor = if (isError) ErrorRed else Pink,
+            unfocusedBorderColor = if (isError) ErrorRed else BorderGray,
             textColor = White,
         ),
         leadingIcon = {
@@ -223,14 +273,17 @@ fun TextFieldBox(
                 contentDescription = "Email",
             )
         },
+        visualTransformation = visualTransformation,
         singleLine = true,
         trailingIcon = {
             if (isTrue) {
                 IconButton(
-                    onClick = { },
+                    onClick = onClick,
                 ) {
                     Icon(
-                        painter = painterResource(id = R.drawable.ic_eye_open),
+                        painter = painterResource(
+                            id = if (!isSee) R.drawable.ic_eye_open else R.drawable.ic_eye_close
+                        ),
                         contentDescription = "Email",
                         tint = Gray,
                     )

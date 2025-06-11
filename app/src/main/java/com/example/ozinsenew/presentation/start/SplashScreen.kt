@@ -1,4 +1,4 @@
-package com.example.ozinsenew.presentation.home
+package com.example.ozinsenew.presentation.start
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
