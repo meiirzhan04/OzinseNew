@@ -7,6 +7,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.ozinsenew.data.OnboardingPreferences
+import com.example.ozinsenew.presentation.home.HomeScreen
 import com.example.ozinsenew.presentation.start.OnboardingScreen
 import com.example.ozinsenew.presentation.start.SplashScreen
 import com.example.ozinsenew.presentation.login.LoginScreen
@@ -43,6 +44,9 @@ fun NavGraph() {
                 viewModel = viewModel(),
                 navController
             )
+        }
+        composable<Screen.HomeScreen> {
+            HomeScreen()
         }
     }
 }

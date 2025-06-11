@@ -11,7 +11,7 @@ import com.example.ozinsenew.R
 val Typography = Typography(
     bodyLarge = TextStyle(
         fontFamily = FontFamily(Font(R.font.sfdr)),
-        fontWeight = FontWeight.W400,
+        fontWeight = FontWeight.W700,
         fontSize = 16.sp,
         lineHeight = 24.sp,
         letterSpacing = 0.5.sp

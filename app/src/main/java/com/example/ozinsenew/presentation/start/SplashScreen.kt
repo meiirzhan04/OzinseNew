@@ -30,7 +30,7 @@ fun SplashScreen(navController: NavController, onBoardingPreferences: Onboarding
         coroutineScope.launch {
             delay(3000)
             isOnboardingCompleted = onBoardingPreferences.isOnboardingCompleted.first()
-            navController.navigate(if (isOnboardingCompleted == true) Screen.LoginScreen else Screen.OnboardingScreen) {
+            navController.navigate(if (isOnboardingCompleted == true) Screen.HomeScreen else Screen.OnboardingScreen) {
                 popUpTo(Screen.SplashScreen) { inclusive = true }
             }
         }
