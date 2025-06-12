@@ -1,5 +1,7 @@
 package com.example.ozinsenew.presentation.home
 
+//noinspection UsingMaterialAndMaterial3Libraries
+//noinspection UsingMaterialAndMaterial3Libraries
 import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -30,26 +32,27 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.example.ozinsenew.R
 import com.example.ozinsenew.data.home.BoxData
-import com.example.ozinsenew.data.home.boxData
-import com.example.ozinsenew.data.home.headBoxData
-import com.example.ozinsenew.data.home.middleBoxData
+import com.example.ozinsenew.navigation.Screen
 import com.example.ozinsenew.ui.theme.Background
 import com.example.ozinsenew.ui.theme.BoxGray
 import com.example.ozinsenew.ui.theme.Gray
 import com.example.ozinsenew.ui.theme.Pink
 import com.example.ozinsenew.ui.theme.Typography
 import com.example.ozinsenew.ui.theme.White
+import com.example.ozinsenew.viewmodels.ViewModel
 
 @SuppressLint("UnrememberedMutableInteractionSource")
-@Preview
 @Composable
-fun HomeScreen() {
-    val data: BoxData
+fun HomeScreen(navController: NavController, viewModel: ViewModel) {
+    val headBoxData = viewModel.headBoxData
+    val middleBoxData = viewModel.middleBoxData
+    val boxData = viewModel.boxData
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -89,7 +92,12 @@ fun HomeScreen() {
                 LazyRow {
                     items(headBoxData) {
                         Spacer(modifier = Modifier.width(24.dp))
-                        Cards(item = it)
+                        Cards(
+                            item = it,
+                            onClick = {
+                                navController.navigate(Screen.DetailScreen(boxId = it.id))
+                            }
+                        )
                     }
                 }
                 Spacer(modifier = Modifier.height(32.dp))
@@ -106,7 +114,7 @@ fun HomeScreen() {
                         Boxes(item = it)
                     }
                 }
-                Spacer(modifier = Modifier.height(32.dp))
+                Spacer(modifier = Modifier.height(24.dp))
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -219,7 +227,7 @@ fun Boxes(item: BoxData) {
 
 @SuppressLint("UnrememberedMutableInteractionSource")
 @Composable
-fun Cards(item: BoxData) {
+fun Cards(item: BoxData, onClick: () -> Unit = {}) {
     Column(
         modifier = Modifier
     ) {
@@ -228,9 +236,7 @@ fun Cards(item: BoxData) {
                 .clip(shape = RoundedCornerShape(12.dp))
                 .background(Gray)
                 .clickable(
-                    onClick = {
-
-                    },
+                    onClick = onClick,
                     indication = ripple(bounded = false),
                     interactionSource = MutableInteractionSource()
                 )
