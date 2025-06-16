@@ -22,7 +22,7 @@ class ViewModel : ViewModel() {
             id = 0,
             R.drawable.ic_page_1,
             title = "Қызғалдақтар мекені ",
-            description = "Шытырман оқиғалы мультсериал Елбасының «Ұлы даланың жеті қыры» бағдарламасы аясында жүз..."
+            description = "Шытырман оқиғалы мультсериал Елбасының «Ұлы даланың жеті қыры» бағдарламасы аясында жүзеге асырылған. Мақалада қызғалдақтардың отаны Қазақстан екені айтылады. Ал, жоба қызғалдақтардың отаны – Алатау баурайы екенін анимация тілінде дәлелдей түседі."
         ),
         BoxData(
             id = 1,
@@ -34,13 +34,13 @@ class ViewModel : ViewModel() {
 
     private val _middleBoxData = listOf(
         BoxData(
-            id = 0,
+            id = 2,
             R.drawable.ic_page_1,
             title = "Глобус",
             description = "2-бөлім"
         ),
         BoxData(
-            id = 0,
+            id = 3,
             R.drawable.ic_page_2,
             title = "Табиғат сақшылары",
             description = "4-бөлім"
@@ -49,19 +49,19 @@ class ViewModel : ViewModel() {
 
     private val _boxData = listOf(
         BoxData(
-            id = 0,
+            id = 4,
             R.drawable.ic_page_1,
             title = "Айдар",
             description = "Мультсериал"
         ),
         BoxData(
-            id = 0,
+            id = 5,
             R.drawable.ic_page_2,
             title = "Суперкөлік Самұрық",
             description = "Мультсериал"
         ),
         BoxData(
-            id = 0,
+            id = 6,
             R.drawable.ic_page_1,
             title = "Айдар",
             description = "Мультсериал"
@@ -74,8 +74,9 @@ class ViewModel : ViewModel() {
     val boxData: List<BoxData> = _boxData
 
     fun getBoxById(id: Int): BoxData? {
-        return _headBoxData.find { it.id == id }
+        return (headBoxData + middleBoxData + boxData).find { it.id == id }
     }
+
 
     fun getMiddleBoxById(id: Int): BoxData? {
         return _middleBoxData.find { it.id == id }

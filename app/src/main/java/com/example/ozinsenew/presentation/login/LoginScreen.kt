@@ -163,7 +163,7 @@ fun LoginScreen(
                     } else {
                         viewModel.login(email, password)
                         if (viewModel.isAuthenticated) {
-                            navController.navigate(Screen.RegisterScreen)
+                            navController.navigate(Screen.HomeScreen)
                         } else {
                             Toast.makeText(
                                 navController.context,

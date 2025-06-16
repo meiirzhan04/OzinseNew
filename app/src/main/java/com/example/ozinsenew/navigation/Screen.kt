@@ -1,7 +1,6 @@
 package com.example.ozinsenew.navigation
 
 import kotlinx.serialization.Serializable
-import okhttp3.Route
 
 
 sealed interface Screen {
@@ -22,4 +21,16 @@ sealed interface Screen {
 
     @Serializable
     data class DetailScreen(val boxId: Int) : Screen
+
+    @Serializable
+    object SearchScreen : Screen
+
+    @Serializable
+    object BookmarksScreen : Screen
+
+    @Serializable
+    object ProfileScreen : Screen
+
+    @Serializable
+    object EditProfile : Screen
 }

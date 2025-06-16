@@ -21,8 +21,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.TextButton
-import androidx.compose.material.TopAppBar
+import androidx.compose.material3.TextButton
 import androidx.compose.material.ripple
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -32,6 +31,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -53,25 +53,18 @@ fun HomeScreen(navController: NavController, viewModel: ViewModel) {
     val middleBoxData = viewModel.middleBoxData
     val boxData = viewModel.boxData
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = {},
-                backgroundColor = Background,
-                elevation = 0.dp,
-            )
-        }
-    ) { innerPadding ->
+    Scaffold { innerPadding ->
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
                 .background(Background)
                 .padding(innerPadding)
+                .padding(bottom = 65.dp)
         ) {
             item {
                 Box(
                     modifier = Modifier
-                        .padding(start = 24.dp)
+                        .padding(start = 24.dp, top = 24.dp)
                         .clip(shape = RoundedCornerShape(12.dp))
                         .background(BoxGray)
                 ) {
@@ -111,7 +104,9 @@ fun HomeScreen(navController: NavController, viewModel: ViewModel) {
                 LazyRow {
                     items(middleBoxData) {
                         Spacer(modifier = Modifier.width(24.dp))
-                        Boxes(item = it)
+                        Boxes(
+                            item = it,
+                            onClick = { navController.navigate(Screen.DetailScreen(boxId = it.id)) })
                     }
                 }
                 Spacer(modifier = Modifier.height(24.dp))
@@ -142,7 +137,9 @@ fun HomeScreen(navController: NavController, viewModel: ViewModel) {
                 LazyRow {
                     items(boxData) {
                         Spacer(modifier = Modifier.width(24.dp))
-                        HighCard(item = it)
+                        HighCard(
+                            item = it,
+                            onClick = { navController.navigate(Screen.DetailScreen(boxId = it.id)) })
                     }
                 }
                 Spacer(modifier = Modifier.height(32.dp))
@@ -153,14 +150,14 @@ fun HomeScreen(navController: NavController, viewModel: ViewModel) {
 
 @SuppressLint("UnrememberedMutableInteractionSource")
 @Composable
-fun HighCard(item: BoxData) {
+fun HighCard(item: BoxData, onClick: () -> Unit) {
     Column {
         Box(
             modifier = Modifier
                 .clip(shape = RoundedCornerShape(12.dp))
                 .background(Gray)
                 .clickable(
-                    onClick = {},
+                    onClick = onClick,
                     indication = ripple(bounded = false),
                     interactionSource = MutableInteractionSource()
                 )
@@ -178,10 +175,11 @@ fun HighCard(item: BoxData) {
             style = Typography.bodyMedium,
             color = White
         )
+        Spacer(Modifier.height(4.dp))
         Text(
             text = item.description,
             style = Typography.bodySmall,
-            color = Gray
+            color = Gray,
         )
     }
 }
@@ -189,16 +187,14 @@ fun HighCard(item: BoxData) {
 
 @SuppressLint("UnrememberedMutableInteractionSource")
 @Composable
-fun Boxes(item: BoxData) {
+fun Boxes(item: BoxData, onClick: () -> Unit) {
     Column {
         Box(
             modifier = Modifier
                 .clip(shape = RoundedCornerShape(12.dp))
                 .background(Gray)
                 .clickable(
-                    onClick = {
-
-                    },
+                    onClick = onClick,
                     indication = ripple(bounded = false),
                     interactionSource = MutableInteractionSource()
                 )
@@ -216,6 +212,7 @@ fun Boxes(item: BoxData) {
             style = Typography.bodyMedium,
             color = White
         )
+        Spacer(Modifier.height(4.dp))
         Text(
             text = item.description,
             style = Typography.bodySmall,
@@ -258,7 +255,7 @@ fun Cards(item: BoxData, onClick: () -> Unit = {}) {
                     fontSize = 12.sp,
                     color = White,
                     letterSpacing = 0.5.sp,
-                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
+                    modifier = Modifier.padding(horizontal = 8.dp)
 
                 )
             }
@@ -270,7 +267,7 @@ fun Cards(item: BoxData, onClick: () -> Unit = {}) {
             Text(
                 text = item.title,
                 style = Typography.bodyMedium,
-                color = White
+                color = White,
             )
             Spacer(modifier = Modifier.height(8.dp))
             Text(
@@ -280,6 +277,8 @@ fun Cards(item: BoxData, onClick: () -> Unit = {}) {
                 lineHeight = 16.sp,
                 letterSpacing = 1.sp,
                 color = Gray,
+                overflow = TextOverflow.Ellipsis,
+                maxLines = 2
             )
         }
     }
