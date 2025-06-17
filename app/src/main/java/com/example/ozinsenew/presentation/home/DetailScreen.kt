@@ -27,6 +27,10 @@ import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.ripple
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -59,6 +63,8 @@ fun DetailScreen(
     listViewModel: ListViewModel,
     item: ListItems
 ) {
+
+    var isClicked by remember { mutableStateOf(false) }
     val gradientColors = listOf(
         Color(0xFF_E5E7EB),
         Color(0xFF_E5E7EB).copy(alpha = 0f),
@@ -107,10 +113,15 @@ fun DetailScreen(
                     "Тізімге қосу",
                     onClick = {
                         listViewModel.insert(item)
-                    }
+                        isClicked = !isClicked
+                    },
+                    color = if (isClicked) Pink else Color.Unspecified
                 )
-                ElementBox(R.drawable.ic_play, "")
-                ElementBox(R.drawable.ic_share, "Бөлісу")
+                ElementBox(R.drawable.ic_play, "", color = Color.Unspecified)
+                ElementBox(R.drawable.ic_share, "Бөлісу", color = Color.Unspecified)
+                if (isClicked) {
+
+                }
             }
             LazyColumn(
                 modifier = Modifier
@@ -217,7 +228,7 @@ fun DetailScreen(
 
 
 @Composable
-fun ElementBox(image: Int, text: String, onClick: () -> Unit = {}) {
+fun ElementBox(image: Int, text: String, onClick: () -> Unit = {}, color: Color) {
     Column(
         modifier = Modifier.clickable(
             onClick = onClick,
@@ -229,7 +240,8 @@ fun ElementBox(image: Int, text: String, onClick: () -> Unit = {}) {
     ) {
         Image(
             painterResource(image),
-            contentDescription = ""
+            contentDescription = "",
+            modifier = Modifier.background(color)
         )
         Text(
             text = text,

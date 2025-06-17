@@ -18,9 +18,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Divider
+import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -56,6 +58,7 @@ import com.example.ozinsenew.ui.theme.Background
 import com.example.ozinsenew.ui.theme.BoxGray
 import com.example.ozinsenew.ui.theme.Gray
 import com.example.ozinsenew.ui.theme.Pink
+import com.example.ozinsenew.ui.theme.TextPink
 import com.example.ozinsenew.ui.theme.Typography
 import com.example.ozinsenew.ui.theme.White
 import com.example.ozinsenew.viewmodels.ViewModel
@@ -74,6 +77,11 @@ fun ProfileScreen(navController: NavController, viewModel: ViewModel) {
     var languageSelected by rememberSaveable { mutableIntStateOf(initialIndex) }
     var selectedLanguage by remember { mutableStateOf(languages[languageSelected]) }
     var showLogOutSheet by remember { mutableStateOf(false) }
+
+    val sharedPreferences = context.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+
+    var name by remember { mutableStateOf(sharedPreferences.getString("name", "") ?: "") }
+    var email by remember { mutableStateOf(sharedPreferences.getString("email", "") ?: "") }
 
     if (showChangeLanguageSheet) {
         ModalBottomSheet(
@@ -115,7 +123,70 @@ fun ProfileScreen(navController: NavController, viewModel: ViewModel) {
             }
         }
     }
-
+    if (showLogOutSheet) {
+        ModalBottomSheet(
+            onDismissRequest = { showLogOutSheet = false },
+            shape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp),
+            containerColor = Color(0xFF1C2431),
+            sheetState = resetSheetState,
+            scrimColor = Color.Black.copy(alpha = 0.5f),
+            dragHandle = { CustomDragHandle() }
+        ) {
+            LazyColumn(modifier = Modifier.padding(20.dp)) {
+                item {
+                    Column {
+                        Text(
+                            text = "Шығу",
+                            color = Color.White,
+                            fontSize = 24.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(
+                            text = "Сіз шынымен аккаунтыныздан",
+                            style = Typography.titleLarge,
+                            color = Gray
+                        )
+                        Spacer(Modifier.height(32.dp))
+                        Button(
+                            onClick = {},
+                            colors = ButtonDefaults.buttonColors(
+                                backgroundColor = Pink,
+                                contentColor = White
+                            ),
+                            modifier = Modifier.fillMaxWidth(),
+                            shape = RoundedCornerShape(12.dp)
+                        ) {
+                            Text(
+                                text = "Иә, шығу",
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.W600,
+                                modifier = Modifier.padding(16.dp),
+                                color = White
+                            )
+                        }
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Button(
+                            onClick = {},
+                            shape = RoundedCornerShape(12.dp),
+                            modifier = Modifier.fillMaxWidth(),
+                            colors = ButtonDefaults.buttonColors(
+                                backgroundColor = BoxGray,
+                            )
+                        ) {
+                            Text(
+                                text = "Жоқ",
+                                fontSize = 16.sp,
+                                color = TextPink,
+                                fontWeight = FontWeight.W600,
+                                modifier = Modifier.padding(16.dp)
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
     Scaffold(
         topBar = {
             TopAppBar(
@@ -142,6 +213,7 @@ fun ProfileScreen(navController: NavController, viewModel: ViewModel) {
                         contentDescription = "Logout",
                         modifier = Modifier.clickable {
                             viewModel.logout()
+                            showLogOutSheet = true
                         }
                     )
                 },
@@ -159,7 +231,7 @@ fun ProfileScreen(navController: NavController, viewModel: ViewModel) {
                 .padding(innerPadding)
                 .padding(bottom = 90.dp)
         ) {
-            ProfileHeader()
+            ProfileHeader(name, email)
 
             LazyColumn(
                 modifier = Modifier
@@ -185,7 +257,7 @@ fun ProfileScreen(navController: NavController, viewModel: ViewModel) {
 }
 
 @Composable
-fun ProfileHeader() {
+fun ProfileHeader(name: String, email: String) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -204,13 +276,13 @@ fun ProfileHeader() {
                 modifier = Modifier.size(140.dp)
             )
             Text(
-                text = "Менің профилім",
+                text = name,
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold,
                 color = White
             )
             Text(
-                text = "me@example.com", // заменить на реальный email, если есть
+                text = email,
                 style = Typography.bodyMedium,
                 color = Gray
             )
@@ -229,15 +301,19 @@ fun TextBox(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 24.dp),
+            .padding(vertical = 24.dp)
+            .clickable(
+                onClick = onClick,
+                indication = null,
+                interactionSource = null
+            ),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
             text = text,
             style = Typography.bodyLarge,
-            color = White,
-            modifier = Modifier.clickable(onClick = onClick)
+            color = White
         )
 
         if (isText) {
