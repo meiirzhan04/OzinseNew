@@ -54,7 +54,7 @@ val Typography = Typography(
         fontFamily = FontFamily(Font(R.font.sfdr)),
         fontWeight = FontWeight.W600,
         fontSize = 14.sp,
-        lineHeight = 24.sp,
+        lineHeight = 20.sp,
         letterSpacing = 0.5.sp
     ),
     bodyMedium = TextStyle(

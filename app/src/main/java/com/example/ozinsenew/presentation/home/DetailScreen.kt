@@ -63,8 +63,7 @@ fun DetailScreen(
     itemId: Int,
     viewModel: ViewModel,
     listViewModel: ListViewModel,
-    paddingValues: PaddingValues,
-    item: ListItems
+    paddingValues: PaddingValues
 ) {
     val scope = rememberCoroutineScope()
     val isBookmarked = remember { mutableStateOf(false) }

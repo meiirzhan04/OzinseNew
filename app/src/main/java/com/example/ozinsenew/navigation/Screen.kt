@@ -28,7 +28,6 @@ sealed interface Screen {
     @Serializable
     object BookmarksScreen : Screen {
         const val route = "bookmark/{category}"
-        fun createRoute(category: String): String = "bookmark/$category"
     }
 
     @Serializable
@@ -36,6 +35,9 @@ sealed interface Screen {
 
     @Serializable
     object EditProfile : Screen
+
+    @Serializable
+    object ResetPasswordScreen : Screen
 }
 
 fun Screen.route(): String = when (this) {
@@ -49,6 +51,7 @@ fun Screen.route(): String = when (this) {
     Screen.BookmarksScreen -> "bookmark/{category}"
     Screen.ProfileScreen -> "profile"
     Screen.EditProfile -> "edit_profile"
+    Screen.ResetPasswordScreen -> "reset_password"
 }
 
 fun Screen.baseRoute(): String = when (this) {
@@ -62,4 +65,5 @@ fun Screen.baseRoute(): String = when (this) {
     Screen.BookmarksScreen -> "bookmark/{category}"
     Screen.ProfileScreen -> "profile"
     Screen.EditProfile -> "edit_profile"
+    Screen.ResetPasswordScreen -> "reset_password"
 }

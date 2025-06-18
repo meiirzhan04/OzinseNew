@@ -246,7 +246,9 @@ fun ProfileScreen(navController: NavController, viewModel: ViewModel) {
                     TextBox("Жеке деректер", "Өңдеу", isTrue = true) {
                         navController.navigate(Screen.EditProfile.route())
                     }
-                    TextBox("Құпия сөзді өзгерту", "", isTrue = true) {}
+                    TextBox("Құпия сөзді өзгерту", "", isTrue = true) {
+                        navController.navigate(Screen.ResetPasswordScreen.route())
+                    }
                     TextBox("Тіл", selectedLanguage, isTrue = true) {
                         showChangeLanguageSheet = true
                     }

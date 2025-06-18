@@ -19,16 +19,15 @@ import com.example.ozinsenew.presentation.login.LoginScreen
 import com.example.ozinsenew.presentation.login.RegisterScreen
 import com.example.ozinsenew.presentation.profile.EditProfile
 import com.example.ozinsenew.presentation.profile.ProfileScreen
+import com.example.ozinsenew.presentation.profile.ResetPasswordScreen
 import com.example.ozinsenew.presentation.start.OnboardingScreen
 import com.example.ozinsenew.presentation.start.SplashScreen
-import com.example.ozinsenew.room.bookmark.ListItems
 import com.example.ozinsenew.viewmodels.ListViewModel
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun NavGraph(
     navController: NavHostController,
-    item: ListItems,
     listViewModel: ListViewModel,
     paddingValues: PaddingValues
 ) {
@@ -84,7 +83,6 @@ fun NavGraph(
                 itemId = boxId,
                 listViewModel = listViewModel,
                 viewModel = viewModel(),
-                item = item,
                 paddingValues = paddingValues
             )
         }
@@ -98,7 +96,7 @@ fun NavGraph(
             arguments = listOf(navArgument("category") { type = NavType.StringType })
         ) { backStackEntry ->
             val category = backStackEntry.arguments?.getString("category") ?: ""
-            BookmarksScreen(listViewModel, category)
+            BookmarksScreen(listViewModel, category, navController)
         }
 
         composable(Screen.ProfileScreen.route()) {
@@ -110,6 +108,10 @@ fun NavGraph(
 
         composable(Screen.EditProfile.route()) {
             EditProfile(navController = navController, viewModel())
+        }
+
+        composable(Screen.ResetPasswordScreen.route()) {
+            ResetPasswordScreen(navController = navController)
         }
     }
 }

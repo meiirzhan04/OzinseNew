@@ -5,7 +5,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.viewModelScope
 import com.example.ozinsenew.R
 import com.example.ozinsenew.data.home.BoxData
 import com.example.ozinsenew.room.bookmark.ListItems
@@ -13,8 +12,6 @@ import com.example.ozinsenew.room.bookmark.ListItemsDatabase
 import com.example.ozinsenew.room.bookmark.ListRepository
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.launch
 
 class ViewModel(application: Application) : AndroidViewModel(application) {
     private val readAllData: Flow<List<ListItems>>
@@ -122,20 +119,6 @@ class ViewModel(application: Application) : AndroidViewModel(application) {
             }
     }
 
-    fun currentEmailForProfile(): String? {
-        return auth.currentUser?.email
-    }
-
-    fun resetPassword(email: String) {
-        auth.sendPasswordResetEmail(email)
-            .addOnCompleteListener { task ->
-                isAuthenticated = task.isSuccessful
-                if (!task.isSuccessful) {
-                    errorMessage = task.exception?.message
-                }
-            }
-    }
-
     fun updateFirebaseEmail(newEmail: String, onResult: (Boolean, String?) -> Unit) {
         val user = FirebaseAuth.getInstance().currentUser
         if (user != null) {
@@ -150,10 +133,6 @@ class ViewModel(application: Application) : AndroidViewModel(application) {
         } else {
             onResult(false, "User is null")
         }
-    }
-
-    fun getCurrentEmail(): String {
-        return FirebaseAuth.getInstance().currentUser?.email ?: ""
     }
 
     fun logout() {

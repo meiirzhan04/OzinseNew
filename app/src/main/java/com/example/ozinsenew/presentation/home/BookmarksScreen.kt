@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
+//noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.TabRowDefaults.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
@@ -35,7 +36,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import com.example.ozinsenew.R
+import com.example.ozinsenew.navigation.Screen
+import com.example.ozinsenew.navigation.route
 import com.example.ozinsenew.ui.theme.Background
 import com.example.ozinsenew.ui.theme.BoxGray
 import com.example.ozinsenew.ui.theme.TextPink
@@ -45,7 +49,11 @@ import com.example.ozinsenew.viewmodels.ListViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BookmarksScreen(listViewModel: ListViewModel, category: String) {
+fun BookmarksScreen(
+    listViewModel: ListViewModel,
+    category: String,
+    navController: NavHostController
+) {
     val itemsList by listViewModel.allItems.collectAsState(initial = emptyList())
     val bookmarks by listViewModel
         .getItemsByCategory(category)
@@ -92,7 +100,9 @@ fun BookmarksScreen(listViewModel: ListViewModel, category: String) {
                     image = item.image,
                     title = item.name,
                     data = item.data,
-                    onClick = {}
+                    onClick = {
+                        navController.navigate(Screen.DetailScreen(item.id).route())
+                    }
                 )
                 if (index != bookmarks.lastIndex) {
                     Spacer(modifier = Modifier.height(24.dp))
@@ -120,13 +130,17 @@ fun ImageBox(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(20.dp)
     ) {
-        Image(
-            painter = painterResource(id = image),
-            contentDescription = "Avatar",
+        Box(
             modifier = Modifier
                 .clip(RoundedCornerShape(8.dp))
                 .size(80.dp, 110.dp)
-        )
+        ) {
+            Image(
+                painter = painterResource(id = image),
+                contentDescription = "Avatar",
+                modifier = Modifier.fillMaxSize()
+            )
+        }
         Column {
             Text(
                 text = title,

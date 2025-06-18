@@ -11,7 +11,6 @@ import com.example.ozinsenew.viewmodels.ListViewModel
 
 @Composable
 fun MainScreen(
-    item: ListItems,
     listViewModel: ListViewModel
 ) {
     val navController = rememberNavController()
@@ -41,7 +40,6 @@ fun MainScreen(
     ) { paddingValues ->
         NavGraph(
             navController = navController,
-            item = item,
             listViewModel = listViewModel,
             paddingValues = paddingValues
         )

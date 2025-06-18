@@ -30,11 +30,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import com.example.ozinsenew.R
 import com.example.ozinsenew.data.home.BoxData
 import com.example.ozinsenew.navigation.Screen
@@ -49,7 +48,7 @@ import com.example.ozinsenew.viewmodels.ViewModel
 
 @SuppressLint("UnrememberedMutableInteractionSource")
 @Composable
-fun HomeScreen(navController: NavController, viewModel: ViewModel) {
+fun HomeScreen(navController: NavHostController, viewModel: ViewModel) {
     val headBoxData = viewModel.headBoxData
     val middleBoxData = viewModel.middleBoxData
     val boxData = viewModel.boxData
@@ -167,43 +166,6 @@ fun HomeScreen(navController: NavController, viewModel: ViewModel) {
 
 @SuppressLint("UnrememberedMutableInteractionSource")
 @Composable
-fun HighCard(item: BoxData, onClick: () -> Unit) {
-    Column {
-        Box(
-            modifier = Modifier
-                .clip(shape = RoundedCornerShape(12.dp))
-                .background(Gray)
-                .clickable(
-                    onClick = onClick,
-                    indication = ripple(bounded = false),
-                    interactionSource = MutableInteractionSource()
-                )
-        ) {
-            Image(
-                painterResource(item.image),
-                contentDescription = "page",
-                contentScale = ContentScale.Crop,
-                modifier = Modifier.size(120.dp, 180.dp)
-            )
-        }
-        Spacer(modifier = Modifier.height(16.dp))
-        Text(
-            text = item.title,
-            style = Typography.bodyMedium,
-            color = White
-        )
-        Spacer(Modifier.height(4.dp))
-        Text(
-            text = item.description,
-            style = Typography.bodySmall,
-            color = Gray,
-        )
-    }
-}
-
-
-@SuppressLint("UnrememberedMutableInteractionSource")
-@Composable
 fun BoxCard(
     item: BoxData,
     size: androidx.compose.ui.unit.DpSize,
@@ -250,7 +212,7 @@ fun BoxCard(
             style = Typography.bodyMedium,
             color = White
         )
-        Spacer(modifier = Modifier.height(4.dp))
+        Spacer(modifier = Modifier.height(8.dp))
         Text(
             text = item.description,
             style = Typography.bodySmall,
@@ -260,73 +222,6 @@ fun BoxCard(
         )
     }
 }
-
-@SuppressLint("UnrememberedMutableInteractionSource")
-@Composable
-fun Cards(item: BoxData, onClick: () -> Unit = {}) {
-    Column(
-        modifier = Modifier
-    ) {
-        Box(
-            modifier = Modifier
-                .clip(shape = RoundedCornerShape(12.dp))
-                .background(Gray)
-                .clickable(
-                    onClick = onClick,
-                    indication = ripple(bounded = false),
-                    interactionSource = MutableInteractionSource()
-                )
-        ) {
-            Image(
-                painterResource(item.image),
-                contentDescription = "page",
-                contentScale = ContentScale.Crop,
-                modifier = Modifier.size(340.dp, 200.dp)
-            )
-            Box(
-                modifier = Modifier
-                    .padding(8.dp)
-                    .clip(shape = RoundedCornerShape(8.dp))
-                    .background(Pink)
-            ) {
-                Text(
-                    text = "Телехикая",
-                    fontSize = 12.sp,
-                    color = White,
-                    letterSpacing = 0.5.sp,
-                    modifier = Modifier.padding(horizontal = 8.dp)
-
-                )
-            }
-        }
-        Spacer(modifier = Modifier.height(16.dp))
-        Column(
-            modifier = Modifier.width(340.dp)
-        ) {
-            Text(
-                text = item.title,
-                style = Typography.bodyMedium,
-                color = White,
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = item.description,
-                fontSize = 12.sp,
-                fontWeight = FontWeight.W400,
-                lineHeight = 16.sp,
-                letterSpacing = 1.sp,
-                color = Gray,
-                overflow = TextOverflow.Ellipsis,
-                maxLines = 2
-            )
-        }
-    }
-}
-
-
-
-
-
 
 
 
