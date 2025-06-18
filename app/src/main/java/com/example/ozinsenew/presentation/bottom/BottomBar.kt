@@ -11,7 +11,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.ozinsenew.R
 import com.example.ozinsenew.navigation.Screen
-import com.example.ozinsenew.ui.theme.Background
+import com.example.ozinsenew.navigation.route
 import com.example.ozinsenew.ui.theme.BoxGray
 import com.example.ozinsenew.ui.theme.Gray
 import com.example.ozinsenew.ui.theme.Pink
@@ -19,7 +19,7 @@ import com.example.ozinsenew.ui.theme.Pink
 
 @Composable
 fun BottomNavigationBar(
-    currentScreen: Screen,
+    currentScreen: String,
     onItemSelected: (Screen) -> Unit
 ) {
     val items = listOf(
@@ -47,10 +47,10 @@ fun BottomNavigationBar(
                     Icon(
                         painterResource(id = icon),
                         contentDescription = screen::class.simpleName,
-                        tint = if (screen == currentScreen) Pink else Gray
+                        tint = if (screen.route() == currentScreen) Pink else Gray
                     )
                 },
-                selected = screen == currentScreen,
+                selected = currentScreen == screen.route(),
                 onClick = { onItemSelected(screen) },
                 colors = NavigationBarItemDefaults.colors(
                     selectedIconColor = Pink,

@@ -39,6 +39,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.ozinsenew.R
 import com.example.ozinsenew.navigation.Screen
+import com.example.ozinsenew.navigation.route
 import com.example.ozinsenew.ui.theme.Background
 import com.example.ozinsenew.ui.theme.BorderGray
 import com.example.ozinsenew.ui.theme.BoxGray
@@ -50,9 +51,6 @@ import com.example.ozinsenew.ui.theme.TextPink
 import com.example.ozinsenew.ui.theme.Typography
 import com.example.ozinsenew.ui.theme.White
 import com.example.ozinsenew.viewmodels.ViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -158,12 +156,13 @@ fun LoginScreen(
                 onClick = {
                     isClicked.value = true
                     if (email.isEmpty() || password.isEmpty()) {
-                        Toast.makeText(navController.context, "Not Found", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(navController.context, "Not Found", Toast.LENGTH_SHORT)
+                            .show()
                         return@Button
                     } else {
                         viewModel.login(email, password)
                         if (viewModel.isAuthenticated) {
-                            navController.navigate(Screen.HomeScreen)
+                            navController.navigate(Screen.HomeScreen.route())
                         } else {
                             Toast.makeText(
                                 navController.context,
@@ -189,7 +188,7 @@ fun LoginScreen(
             Spacer(modifier = Modifier.height(24.dp))
             TextButton(
                 onClick = {
-                    navController.navigate(Screen.RegisterScreen)
+                    navController.navigate(Screen.RegisterScreen.route())
                 },
                 modifier = Modifier.align(Alignment.CenterHorizontally)
             ) {

@@ -17,6 +17,7 @@ import androidx.navigation.NavController
 import com.example.ozinsenew.R
 import com.example.ozinsenew.data.OnboardingPreferences
 import com.example.ozinsenew.navigation.Screen
+import com.example.ozinsenew.navigation.route
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
@@ -30,8 +31,8 @@ fun SplashScreen(navController: NavController, onBoardingPreferences: Onboarding
         coroutineScope.launch {
             delay(3000)
             isOnboardingCompleted = onBoardingPreferences.isOnboardingCompleted.first()
-            navController.navigate(if (isOnboardingCompleted == true) Screen.HomeScreen else Screen.OnboardingScreen) {
-                popUpTo(Screen.SplashScreen) { inclusive = true }
+            navController.navigate(if (isOnboardingCompleted == true) Screen.HomeScreen.route() else Screen.OnboardingScreen.route()) {
+                popUpTo(Screen.SplashScreen.route()) { inclusive = true }
             }
         }
     }

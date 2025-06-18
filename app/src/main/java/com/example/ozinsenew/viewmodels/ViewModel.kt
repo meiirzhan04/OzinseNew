@@ -1,15 +1,32 @@
 package com.example.ozinsenew.viewmodels
 
+import android.app.Application
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.ozinsenew.R
 import com.example.ozinsenew.data.home.BoxData
+import com.example.ozinsenew.room.bookmark.ListItems
+import com.example.ozinsenew.room.bookmark.ListItemsDatabase
+import com.example.ozinsenew.room.bookmark.ListRepository
 import com.google.firebase.auth.FirebaseAuth
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 
-class ViewModel : ViewModel() {
+class ViewModel(application: Application) : AndroidViewModel(application) {
+    private val readAllData: Flow<List<ListItems>>
+    private val repository: ListRepository
+    var isDarkTheme by mutableStateOf(false)
     private val auth = FirebaseAuth.getInstance()
+
+    init {
+        val listItemsDao = ListItemsDatabase.getDatabase(application).listItemsDao()
+        repository = ListRepository(listItemsDao)
+        readAllData = repository.readAllData
+    }
 
     var isAuthenticated by mutableStateOf(false)
         private set
@@ -17,18 +34,21 @@ class ViewModel : ViewModel() {
     var errorMessage by mutableStateOf<String?>("Not")
         private set
 
+
     private val _headBoxData = listOf(
         BoxData(
             id = 0,
             R.drawable.ic_page_1,
             title = "Қызғалдақтар мекені ",
-            description = "Шытырман оқиғалы мультсериал Елбасының «Ұлы даланың жеті қыры» бағдарламасы аясында жүзеге асырылған. Мақалада қызғалдақтардың отаны Қазақстан екені айтылады. Ал, жоба қызғалдақтардың отаны – Алатау баурайы екенін анимация тілінде дәлелдей түседі."
+            description = "Шытырман оқиғалы мультсериал Елбасының «Ұлы даланың жеті қыры» бағдарламасы аясында жүзеге асырылған. Мақалада қызғалдақтардың отаны Қазақстан екені айтылады. Ал, жоба қызғалдақтардың отаны – Алатау баурайы екенін анимация тілінде дәлелдей түседі.",
+            category = "head"
         ),
         BoxData(
             id = 1,
             R.drawable.ic_page_2,
             title = "Ойыншықтар",
-            description = "5 жасар Алуаның ойыншықтары өте көп. Ол барлығын бірдей жақсы көріп, ұқыпты, таза ұстайды"
+            description = "5 жасар Алуаның ойыншықтары өте көп. Ол барлығын бірдей жақсы көріп, ұқыпты, таза ұстайды",
+            category = "head"
         )
     )
 
@@ -37,13 +57,15 @@ class ViewModel : ViewModel() {
             id = 2,
             R.drawable.ic_page_1,
             title = "Глобус",
-            description = "2-бөлім"
+            description = "2-бөлім",
+            category = "middle"
         ),
         BoxData(
             id = 3,
             R.drawable.ic_page_2,
             title = "Табиғат сақшылары",
-            description = "4-бөлім"
+            description = "4-бөлім",
+            category = "middle"
         )
     )
 
@@ -52,19 +74,22 @@ class ViewModel : ViewModel() {
             id = 4,
             R.drawable.ic_page_1,
             title = "Айдар",
-            description = "Мультсериал"
+            description = "Мультсериал",
+            category = "box"
         ),
         BoxData(
             id = 5,
             R.drawable.ic_page_2,
             title = "Суперкөлік Самұрық",
-            description = "Мультсериал"
+            description = "Мультсериал",
+            category = "box"
         ),
         BoxData(
             id = 6,
             R.drawable.ic_page_1,
             title = "Айдар",
-            description = "Мультсериал"
+            description = "Мультсериал",
+            category = "box"
         ),
     )
 
@@ -75,15 +100,6 @@ class ViewModel : ViewModel() {
 
     fun getBoxById(id: Int): BoxData? {
         return (headBoxData + middleBoxData + boxData).find { it.id == id }
-    }
-
-
-    fun getMiddleBoxById(id: Int): BoxData? {
-        return _middleBoxData.find { it.id == id }
-    }
-
-    fun getBoxDataById(id: Int): BoxData? {
-        return _boxData.find { it.id == id }
     }
 
     fun register(email: String, password: String) {
@@ -106,8 +122,44 @@ class ViewModel : ViewModel() {
             }
     }
 
+    fun currentEmailForProfile(): String? {
+        return auth.currentUser?.email
+    }
+
+    fun resetPassword(email: String) {
+        auth.sendPasswordResetEmail(email)
+            .addOnCompleteListener { task ->
+                isAuthenticated = task.isSuccessful
+                if (!task.isSuccessful) {
+                    errorMessage = task.exception?.message
+                }
+            }
+    }
+
+    fun updateFirebaseEmail(newEmail: String, onResult: (Boolean, String?) -> Unit) {
+        val user = FirebaseAuth.getInstance().currentUser
+        if (user != null) {
+            user.updateEmail(newEmail)
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        onResult(true, null)
+                    } else {
+                        onResult(false, task.exception?.message)
+                    }
+                }
+        } else {
+            onResult(false, "User is null")
+        }
+    }
+
+    fun getCurrentEmail(): String {
+        return FirebaseAuth.getInstance().currentUser?.email ?: ""
+    }
+
     fun logout() {
         auth.signOut()
         isAuthenticated = false
     }
+
+
 }

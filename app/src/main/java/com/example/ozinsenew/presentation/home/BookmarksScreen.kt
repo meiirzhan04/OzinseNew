@@ -1,5 +1,6 @@
 package com.example.ozinsenew.presentation.home
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -14,50 +15,71 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.TabRowDefaults.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.ozinsenew.R
-import com.example.ozinsenew.room.bookmark.ListItems
 import com.example.ozinsenew.ui.theme.Background
 import com.example.ozinsenew.ui.theme.BoxGray
 import com.example.ozinsenew.ui.theme.TextPink
 import com.example.ozinsenew.ui.theme.Typography
 import com.example.ozinsenew.ui.theme.White
+import com.example.ozinsenew.viewmodels.ListViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BookmarksScreen(item: ListItems) {
+fun BookmarksScreen(listViewModel: ListViewModel, category: String) {
+    val itemsList by listViewModel.allItems.collectAsState(initial = emptyList())
+    val bookmarks by listViewModel
+        .getItemsByCategory(category)
+        .collectAsState(initial = emptyList())
+    Log.d("BookmarkScreen", "Bookmarks count: ${bookmarks.size}")
+
+
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = {
-                    Text(
-                        text = "Тізім",
-                        modifier = Modifier.fillMaxWidth(),
-                        textAlign = TextAlign.Center,
-                        style = Typography.bodyLarge,
-                        color = White
-                    )
-                },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = Background),
-                modifier = Modifier
-                    .background(Background)
-                    .padding(horizontal = 24.dp)
-            )
+            Column {
+                TopAppBar(
+                    title = {
+                        Text(
+                            text = "Тізім",
+                            modifier = Modifier.fillMaxWidth(),
+                            textAlign = TextAlign.Center,
+                            style = Typography.bodyLarge,
+                            color = White
+                        )
+                    },
+                    colors = TopAppBarDefaults.topAppBarColors(containerColor = Background),
+                    modifier = Modifier
+                        .background(Background)
+                        .padding(horizontal = 24.dp),
+                )
+                HorizontalDivider(
+                    color = BoxGray,
+                    thickness = 1.dp,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
         }
     ) { innerPadding ->
+
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
@@ -65,13 +87,22 @@ fun BookmarksScreen(item: ListItems) {
                 .padding(innerPadding)
                 .padding(24.dp)
         ) {
-            item {
+            itemsIndexed(itemsList) { index, item ->
                 ImageBox(
                     image = item.image,
                     title = item.name,
                     data = item.data,
                     onClick = {}
                 )
+                if (index != bookmarks.lastIndex) {
+                    Spacer(modifier = Modifier.height(24.dp))
+                    Divider(
+                        color = BoxGray,
+                        thickness = 1.dp,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                    Spacer(modifier = Modifier.height(24.dp))
+                }
             }
         }
     }
@@ -106,7 +137,9 @@ fun ImageBox(
             Text(
                 text = data,
                 style = Typography.labelSmall,
-                color = White
+                color = White,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
             )
             Spacer(Modifier.height(24.dp))
             Box(

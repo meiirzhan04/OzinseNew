@@ -39,6 +39,7 @@ import androidx.navigation.NavController
 import com.example.ozinsenew.data.OnboardingPreferences
 import com.example.ozinsenew.data.startTextList
 import com.example.ozinsenew.navigation.Screen
+import com.example.ozinsenew.navigation.route
 import com.example.ozinsenew.ui.theme.Background
 import com.example.ozinsenew.ui.theme.Gray
 import com.example.ozinsenew.ui.theme.Pink
@@ -50,7 +51,6 @@ import kotlinx.coroutines.launch
 @Composable
 fun OnboardingScreen(
     navController: NavController,
-    onClick: () -> Unit
 ) {
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
@@ -65,7 +65,6 @@ fun OnboardingScreen(
 
         BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
             val screenHeight = maxHeight
-            val screenWidth = maxWidth
 
             Image(
                 painter = painterResource(id = item.image),
@@ -100,8 +99,8 @@ fun OnboardingScreen(
                         .clickable {
                             scope.launch {
                                 preferences.setOnboardingCompleted()
-                                navController.navigate(Screen.LoginScreen) {
-                                    popUpTo(Screen.OnboardingScreen) { inclusive = true }
+                                navController.navigate(Screen.LoginScreen.route()) {
+                                    popUpTo(Screen.OnboardingScreen.route()) { inclusive = true }
                                 }
                             }
                         },
@@ -146,8 +145,8 @@ fun OnboardingScreen(
                         onClick = {
                             scope.launch {
                                 preferences.setOnboardingCompleted()
-                                navController.navigate(Screen.LoginScreen) {
-                                    popUpTo(Screen.OnboardingScreen) { inclusive = true }
+                                navController.navigate(Screen.LoginScreen.route()) {
+                                    popUpTo(Screen.OnboardingScreen.route()) { inclusive = true }
                                 }
                             }
                         },

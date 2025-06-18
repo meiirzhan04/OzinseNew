@@ -1,15 +1,16 @@
 package com.example.ozinsenew.navigation
 
 import android.annotation.SuppressLint
-import androidx.compose.material3.Scaffold
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.example.ozinsenew.data.OnboardingPreferences
-import com.example.ozinsenew.presentation.bottom.BottomNavigationBar
 import com.example.ozinsenew.presentation.home.BookmarksScreen
 import com.example.ozinsenew.presentation.home.DetailScreen
 import com.example.ozinsenew.presentation.home.HomeScreen
@@ -26,99 +27,89 @@ import com.example.ozinsenew.viewmodels.ListViewModel
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun NavGraph(
+    navController: NavHostController,
     item: ListItems,
-    listViewModel: ListViewModel
+    listViewModel: ListViewModel,
+    paddingValues: PaddingValues
 ) {
-    val navController = rememberNavController()
-    val onBoardingPreferences = OnboardingPreferences(LocalContext.current)
+    val context = LocalContext.current
+    val onBoardingPreferences = OnboardingPreferences(context)
+
 
     NavHost(
         navController = navController,
-        startDestination = Screen.SplashScreen
+        startDestination = Screen.SplashScreen.route()
     ) {
-        composable<Screen.SplashScreen> {
-            SplashScreen(navController, onBoardingPreferences)
-        }
-        composable<Screen.OnboardingScreen> {
-            OnboardingScreen(
-                navController = navController,
-                onClick = { navController.navigate(Screen.SplashScreen) }
+        composable(Screen.SplashScreen.route()) {
+            SplashScreen(
+                navController,
+                onBoardingPreferences
             )
         }
-        composable<Screen.LoginScreen> {
+
+        composable(Screen.OnboardingScreen.route()) {
+            OnboardingScreen(
+                navController = navController
+            )
+        }
+
+        composable(Screen.LoginScreen.route()) {
             LoginScreen(
                 viewModel = viewModel(),
                 navController = navController
             )
         }
-        composable<Screen.RegisterScreen> {
+
+        composable(Screen.RegisterScreen.route()) {
             RegisterScreen(
                 viewModel = viewModel(),
-                navController
+                navController = navController
             )
         }
-        composable<Screen.HomeScreen> {
-            Scaffold(
-                bottomBar = {
-                    BottomNavigationBar(currentScreen = Screen.HomeScreen) { selectedScreen ->
-                        navController.navigate(selectedScreen)
-                    }
-                }
-            ) {
-                HomeScreen(navController, viewModel())
-            }
+
+        composable(Screen.HomeScreen.route()) {
+            HomeScreen(
+                navController = navController,
+                viewModel = viewModel()
+            )
         }
-        composable<Screen.DetailScreen> { backStackEntry ->
+
+        composable(
+            route = Screen.DetailScreen(0).baseRoute(),
+            arguments = listOf(navArgument("boxId") { type = NavType.IntType })
+        ) { backStackEntry ->
             val boxId = backStackEntry.arguments?.getInt("boxId") ?: return@composable
             DetailScreen(
                 navController = navController,
-                viewModel = viewModel(),
                 itemId = boxId,
+                listViewModel = listViewModel,
+                viewModel = viewModel(),
                 item = item,
-                listViewModel = listViewModel
+                paddingValues = paddingValues
             )
         }
-        composable<Screen.SearchScreen> {
-            Scaffold(
-                bottomBar = {
-                    BottomNavigationBar(currentScreen = Screen.SearchScreen) { selectedScreen ->
-                        navController.navigate(selectedScreen)
-                    }
-                }
-            ) {
-                SearchScreen(
-                    navController
-                )
-            }
+
+        composable(Screen.SearchScreen.route()) {
+            SearchScreen(navController = navController)
         }
 
-        composable<Screen.BookmarksScreen> {
-            Scaffold(
-                bottomBar = {
-                    BottomNavigationBar(currentScreen = Screen.BookmarksScreen) { selectedScreen ->
-                        navController.navigate(selectedScreen)
-                    }
-                }
-            ) {
-                BookmarksScreen(item)
-            }
+        composable(
+            route = Screen.BookmarksScreen.route,
+            arguments = listOf(navArgument("category") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val category = backStackEntry.arguments?.getString("category") ?: ""
+            BookmarksScreen(listViewModel, category)
         }
 
-        composable<Screen.ProfileScreen> {
-            Scaffold(
-                bottomBar = {
-                    BottomNavigationBar(currentScreen = Screen.ProfileScreen) { selectedScreen ->
-                        navController.navigate(selectedScreen)
-                    }
-                }
-            ) {
-                ProfileScreen(navController, viewModel())
-            }
+        composable(Screen.ProfileScreen.route()) {
+            ProfileScreen(
+                navController = navController,
+                viewModel = viewModel()
+            )
         }
 
-        composable<Screen.EditProfile> {
-            EditProfile(navController)
-
+        composable(Screen.EditProfile.route()) {
+            EditProfile(navController = navController, viewModel())
         }
     }
 }

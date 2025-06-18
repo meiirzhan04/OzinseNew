@@ -1,6 +1,7 @@
 package com.example.ozinsenew.presentation.profile
 
 import android.content.Context
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -40,19 +41,22 @@ import androidx.compose.ui.unit.sp
 import androidx.core.content.edit
 import androidx.navigation.NavHostController
 import com.example.ozinsenew.R
-import com.example.ozinsenew.navigation.Screen
 import com.example.ozinsenew.ui.theme.Background
 import com.example.ozinsenew.ui.theme.Typography
 import com.example.ozinsenew.ui.theme.White
+import com.example.ozinsenew.viewmodels.ViewModel
+import com.google.firebase.auth.FirebaseAuth
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EditProfile(navController: NavHostController) {
+fun EditProfile(navController: NavHostController, viewModel: ViewModel) {
     val context = LocalContext.current
     val sharedPreferences = context.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
 
     var name by remember { mutableStateOf(sharedPreferences.getString("name", "") ?: "") }
-    var email by remember { mutableStateOf(sharedPreferences.getString("email", "") ?: "") }
+    var email by remember {
+        mutableStateOf(FirebaseAuth.getInstance().currentUser?.email ?: "")
+    }
     var phone by remember { mutableStateOf(sharedPreferences.getString("phone", "") ?: "") }
     var birthDate by remember { mutableStateOf(sharedPreferences.getString("birthDate", "") ?: "") }
 
@@ -103,7 +107,6 @@ fun EditProfile(navController: NavHostController) {
                 value = email,
                 onValueChange = {
                     email = it
-                    sharedPreferences.edit { putString("email", email) }
                 },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
                 readOnly = false
@@ -125,15 +128,27 @@ fun EditProfile(navController: NavHostController) {
                 value = birthDate,
                 onValueChange = {},
                 readOnly = true,
-                trailingIcon = { IconButton(onClick = {}) {} }
+                trailingIcon = {
+                    IconButton(onClick = {}) {}
+                }
             )
             DividerLine()
             Spacer(modifier = Modifier.weight(1f))
             Button(
-                onClick = { navController.navigate(Screen.ProfileScreen) },
+                onClick = {
+                    viewModel.updateFirebaseEmail(email) { success, message ->
+                        if (!success) {
+                            Toast.makeText(context, "Email сәтті өзгертілді", Toast.LENGTH_SHORT)
+                                .show()
+                            navController.popBackStack()
+                        } else {
+                            Toast.makeText(context, "Қате: $message", Toast.LENGTH_LONG).show()
+                        }
+                    }
+                },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 8.dp, horizontal = 24.dp),
+                    .padding(vertical = 24.dp, horizontal = 24.dp),
                 shape = RoundedCornerShape(18.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF7E2DFC))
             ) {

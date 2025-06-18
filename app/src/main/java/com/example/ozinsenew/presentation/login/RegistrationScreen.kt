@@ -35,6 +35,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.ozinsenew.R
 import com.example.ozinsenew.navigation.Screen
+import com.example.ozinsenew.navigation.route
 import com.example.ozinsenew.ui.theme.Background
 import com.example.ozinsenew.ui.theme.Gray
 import com.example.ozinsenew.ui.theme.Pink
@@ -142,7 +143,7 @@ fun RegisterScreen(
                             ).show()
                         } else {
                             viewModel.register(email, password)
-                            navController.navigate(Screen.LoginScreen)
+                            navController.navigate(Screen.LoginScreen.route())
                         }
                     } else {
                         Toast.makeText(navController.context, "Empty", Toast.LENGTH_SHORT).show()

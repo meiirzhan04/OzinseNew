@@ -9,14 +9,20 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface ListItemsDao {
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun addListItem(item: ListItems)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insert(item: ListItems)
 
-    @Delete
-    suspend fun deleteItems(item: ListItems)
+    @Query("DELETE FROM listitems WHERE name = :name AND data = :data AND image = :image AND category = :category")
+    suspend fun deleteByFields(name: String, data: String, image: Int, category: String)
 
-    @Query("SELECT * FROM ListItems")
-    fun readAllData(): Flow<List<ListItems>>
+    @Query("SELECT * FROM listitems")
+    fun getAllItems(): Flow<List<ListItems>>
 
+    @Query("SELECT * FROM listitems WHERE category = :category")
+    fun getItemsByCategory(category: String): Flow<List<ListItems>>
+
+    @Query("SELECT EXISTS(SELECT 1 FROM listitems WHERE name = :name AND data = :data AND image = :image AND category = :category)")
+    suspend fun isBookmarked(name: String, data: String, image: Int, category: String): Boolean
 }
+
 

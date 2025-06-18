@@ -39,6 +39,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -54,6 +55,7 @@ import androidx.core.content.edit
 import androidx.navigation.NavController
 import com.example.ozinsenew.R
 import com.example.ozinsenew.navigation.Screen
+import com.example.ozinsenew.navigation.route
 import com.example.ozinsenew.ui.theme.Background
 import com.example.ozinsenew.ui.theme.BoxGray
 import com.example.ozinsenew.ui.theme.Gray
@@ -62,6 +64,7 @@ import com.example.ozinsenew.ui.theme.TextPink
 import com.example.ozinsenew.ui.theme.Typography
 import com.example.ozinsenew.ui.theme.White
 import com.example.ozinsenew.viewmodels.ViewModel
+import com.google.firebase.auth.FirebaseAuth
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -81,7 +84,7 @@ fun ProfileScreen(navController: NavController, viewModel: ViewModel) {
     val sharedPreferences = context.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
 
     var name by remember { mutableStateOf(sharedPreferences.getString("name", "") ?: "") }
-    var email by remember { mutableStateOf(sharedPreferences.getString("email", "") ?: "") }
+    val email by rememberUpdatedState(FirebaseAuth.getInstance().currentUser?.email ?: "Email жоқ")
 
     if (showChangeLanguageSheet) {
         ModalBottomSheet(
@@ -241,7 +244,7 @@ fun ProfileScreen(navController: NavController, viewModel: ViewModel) {
             ) {
                 item {
                     TextBox("Жеке деректер", "Өңдеу", isTrue = true) {
-                        navController.navigate(Screen.EditProfile)
+                        navController.navigate(Screen.EditProfile.route())
                     }
                     TextBox("Құпия сөзді өзгерту", "", isTrue = true) {}
                     TextBox("Тіл", selectedLanguage, isTrue = true) {
@@ -249,7 +252,9 @@ fun ProfileScreen(navController: NavController, viewModel: ViewModel) {
                     }
                     TextBox("Ережелер мен шарттар", "", isTrue = true) {}
                     TextBox("Хабарландырулар", "", isTrue = true, isText = false) {}
-                    TextBox("Қараңғы режим", "", isTrue = false, isText = false) {}
+                    TextBox("Қараңғы режим", "", isTrue = false, isText = false) {
+                        viewModel.isDarkTheme = !viewModel.isDarkTheme
+                    }
                 }
             }
         }
@@ -276,7 +281,7 @@ fun ProfileHeader(name: String, email: String) {
                 modifier = Modifier.size(140.dp)
             )
             Text(
-                text = name,
+                text = if (name.isEmpty()) "Менің профилім" else name,
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold,
                 color = White

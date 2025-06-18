@@ -4,6 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -76,12 +77,12 @@ fun SearchScreen(navController: NavController) {
                     .padding(horizontal = 24.dp)
             )
         }
-    ) { innerPadding ->
+    ) { paddingValues ->
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
                 .background(Background)
-                .padding(innerPadding)
+                .padding(paddingValues = paddingValues)
         ) {
             item {
                 HorizontalDivider(

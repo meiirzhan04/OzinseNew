@@ -26,11 +26,40 @@ sealed interface Screen {
     object SearchScreen : Screen
 
     @Serializable
-    object BookmarksScreen : Screen
+    object BookmarksScreen : Screen {
+        const val route = "bookmark/{category}"
+        fun createRoute(category: String): String = "bookmark/$category"
+    }
 
     @Serializable
     object ProfileScreen : Screen
 
     @Serializable
     object EditProfile : Screen
+}
+
+fun Screen.route(): String = when (this) {
+    Screen.SplashScreen -> "splash"
+    Screen.OnboardingScreen -> "onboarding"
+    Screen.LoginScreen -> "login"
+    Screen.RegisterScreen -> "register"
+    Screen.HomeScreen -> "home"
+    is Screen.DetailScreen -> "detail/${this.boxId}"
+    Screen.SearchScreen -> "search"
+    Screen.BookmarksScreen -> "bookmark/{category}"
+    Screen.ProfileScreen -> "profile"
+    Screen.EditProfile -> "edit_profile"
+}
+
+fun Screen.baseRoute(): String = when (this) {
+    Screen.SplashScreen -> "splash"
+    Screen.OnboardingScreen -> "onboarding"
+    Screen.LoginScreen -> "login"
+    Screen.RegisterScreen -> "register"
+    Screen.HomeScreen -> "home"
+    is Screen.DetailScreen -> "detail/{boxId}"
+    Screen.SearchScreen -> "search"
+    Screen.BookmarksScreen -> "bookmark/{category}"
+    Screen.ProfileScreen -> "profile"
+    Screen.EditProfile -> "edit_profile"
 }

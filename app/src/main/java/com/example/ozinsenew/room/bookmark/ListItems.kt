@@ -9,5 +9,6 @@ data class ListItems(
     val id: Int = 0,
     val name: String,
     val image: Int,
-    val data: String
+    val data: String,
+    val category: String
 )
