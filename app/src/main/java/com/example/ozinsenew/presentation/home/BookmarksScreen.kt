@@ -1,5 +1,6 @@
 package com.example.ozinsenew.presentation.home
 
+//noinspection UsingMaterialAndMaterial3Libraries
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -7,6 +8,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -28,6 +30,8 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
@@ -54,7 +58,7 @@ fun BookmarksScreen(
     category: String,
     navController: NavHostController
 ) {
-    val itemsList by listViewModel.allItems.collectAsState(initial = emptyList())
+    val itemsList by remember { listViewModel.allItems }.collectAsState(initial = emptyList())
     val bookmarks by listViewModel
         .getItemsByCategory(category)
         .collectAsState(initial = emptyList())
@@ -92,8 +96,13 @@ fun BookmarksScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .background(Background)
-                .padding(innerPadding)
-                .padding(24.dp)
+                .padding(innerPadding),
+            contentPadding = PaddingValues(
+                start = 24.dp,
+                end = 24.dp,
+                bottom = 70.dp,
+                top = 24.dp
+            )
         ) {
             itemsIndexed(itemsList) { index, item ->
                 ImageBox(
@@ -118,7 +127,6 @@ fun BookmarksScreen(
     }
 }
 
-
 @Composable
 fun ImageBox(
     image: Int,
@@ -126,8 +134,11 @@ fun ImageBox(
     data: String,
     onClick: () -> Unit
 ) {
+    val imagePainter = painterResource(id = image)
+
     Row(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(20.dp)
     ) {
         Box(
@@ -136,7 +147,7 @@ fun ImageBox(
                 .size(80.dp, 110.dp)
         ) {
             Image(
-                painter = painterResource(id = image),
+                painter = imagePainter,
                 contentDescription = "Avatar",
                 modifier = Modifier.fillMaxSize()
             )
@@ -160,15 +171,12 @@ fun ImageBox(
                 modifier = Modifier
                     .clip(RoundedCornerShape(8.dp))
                     .background(BoxGray)
-                    .clickable(
-                        onClick = onClick
-                    )
+                    .clickable(onClick = onClick)
             ) {
                 Row(
-                    modifier = Modifier
-                        .padding(vertical = 1.dp, horizontal = 12.dp),
+                    modifier = Modifier.padding(vertical = 1.dp, horizontal = 12.dp),
                     horizontalArrangement = Arrangement.spacedBy(10.dp),
-                    verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
                     Image(
                         painter = painterResource(id = R.drawable.ic_playsmall),

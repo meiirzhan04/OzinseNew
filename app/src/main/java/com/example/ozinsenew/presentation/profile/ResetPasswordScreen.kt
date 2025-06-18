@@ -42,6 +42,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.example.ozinsenew.R
 import com.example.ozinsenew.R.drawable.ic_eye_close
 import com.example.ozinsenew.R.drawable.ic_eye_open
 import com.example.ozinsenew.R.drawable.ic_passwrod
@@ -58,25 +59,23 @@ fun ResetPasswordScreen(navController: NavHostController) {
     Scaffold(
         topBar = {
             TopAppBar(
-                modifier = Modifier,
+                modifier = Modifier.padding(horizontal = 24.dp),
                 title = {
                     Text(
                         text = "Құпия сөзді өзгерту",
+                        modifier = Modifier.fillMaxWidth(),
                         color = Color.White,
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 45.dp),
+                        textAlign = TextAlign.Center
                     )
                 },
                 navigationIcon = {
                     Icon(
-                        imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
+                        painter = painterResource(id = R.drawable.ic_back),
                         contentDescription = null,
                         tint = Color.White,
                         modifier = Modifier
-                            .padding(horizontal = 32.dp)
                             .clickable(
                                 onClick = {
                                     navController.popBackStack()
@@ -88,11 +87,11 @@ fun ResetPasswordScreen(navController: NavHostController) {
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = Color(0xFF_111827),
-                )
+                ),
+
             )
         }
-    ) {
-        it
+    ) { it
         Column(
             modifier = Modifier
                 .fillMaxSize()

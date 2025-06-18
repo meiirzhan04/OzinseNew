@@ -77,14 +77,15 @@ fun NavGraph(
             route = Screen.DetailScreen(0).baseRoute(),
             arguments = listOf(navArgument("boxId") { type = NavType.IntType })
         ) { backStackEntry ->
-            val boxId = backStackEntry.arguments?.getInt("boxId") ?: return@composable
-            DetailScreen(
-                navController = navController,
-                itemId = boxId,
-                listViewModel = listViewModel,
-                viewModel = viewModel(),
-                paddingValues = paddingValues
-            )
+            backStackEntry.arguments?.getInt("boxId")?.let { boxId ->
+                DetailScreen(
+                    navController = navController,
+                    itemId = boxId,
+                    listViewModel = listViewModel,
+                    viewModel = viewModel(),
+                    paddingValues = paddingValues
+                )
+            }
         }
 
         composable(Screen.SearchScreen.route()) {
@@ -95,8 +96,13 @@ fun NavGraph(
             route = Screen.BookmarksScreen.route,
             arguments = listOf(navArgument("category") { type = NavType.StringType })
         ) { backStackEntry ->
-            val category = backStackEntry.arguments?.getString("category") ?: ""
-            BookmarksScreen(listViewModel, category, navController)
+            backStackEntry.arguments?.getString("category")?.let { category ->
+                BookmarksScreen(
+                    listViewModel = listViewModel,
+                    category = category,
+                    navController = navController
+                )
+            }
         }
 
         composable(Screen.ProfileScreen.route()) {

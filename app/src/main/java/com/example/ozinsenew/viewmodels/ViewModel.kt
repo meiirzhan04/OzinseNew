@@ -52,14 +52,14 @@ class ViewModel(application: Application) : AndroidViewModel(application) {
     private val _middleBoxData = listOf(
         BoxData(
             id = 2,
-            R.drawable.ic_page_1,
+            R.drawable.image_globys,
             title = "Глобус",
             description = "2-бөлім",
             category = "middle"
         ),
         BoxData(
             id = 3,
-            R.drawable.ic_page_2,
+            R.drawable.image_natural,
             title = "Табиғат сақшылары",
             description = "4-бөлім",
             category = "middle"
@@ -69,23 +69,23 @@ class ViewModel(application: Application) : AndroidViewModel(application) {
     private val _boxData = listOf(
         BoxData(
             id = 4,
-            R.drawable.ic_page_1,
+            R.drawable.image_aidar,
             title = "Айдар",
             description = "Мультсериал",
             category = "box"
         ),
         BoxData(
             id = 5,
-            R.drawable.ic_page_2,
+            R.drawable.image_car,
             title = "Суперкөлік Самұрық",
             description = "Мультсериал",
             category = "box"
         ),
         BoxData(
             id = 6,
-            R.drawable.ic_page_1,
-            title = "Айдар",
-            description = "Мультсериал",
+            R.drawable.image_cinema,
+            title = "Каникулы off-line 2",
+            description = "Телехикая",
             category = "box"
         ),
     )

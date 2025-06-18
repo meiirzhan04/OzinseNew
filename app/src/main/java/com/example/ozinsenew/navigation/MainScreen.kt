@@ -6,7 +6,6 @@ import androidx.compose.runtime.getValue
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.ozinsenew.presentation.bottom.BottomNavigationBar
-import com.example.ozinsenew.room.bookmark.ListItems
 import com.example.ozinsenew.viewmodels.ListViewModel
 
 @Composable
@@ -16,7 +15,7 @@ fun MainScreen(
     val navController = rememberNavController()
     val backStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = backStackEntry?.destination?.route
-
+    val currentDestination = navController.currentBackStackEntryAsState().value?.destination?.route
     Scaffold(
         bottomBar = {
             if (currentRoute in listOf(
@@ -26,12 +25,16 @@ fun MainScreen(
                     Screen.ProfileScreen.route()
                 )
             ) {
-                BottomNavigationBar(currentScreen = currentRoute ?: "") { screen ->
-                    navController.navigate(screen.route()) {
-                        launchSingleTop = true
-                        restoreState = true
-                        popUpTo(navController.graph.startDestinationId) {
-                            saveState = true
+                BottomNavigationBar(
+                    currentScreen = currentRoute ?: ""
+                ) { screen ->
+                    if (currentDestination != screen.route()) {
+                        navController.navigate(screen.route()) {
+                            popUpTo(navController.graph.startDestinationId) {
+                                saveState = true
+                            }
+                            launchSingleTop = true
+                            restoreState = true
                         }
                     }
                 }
