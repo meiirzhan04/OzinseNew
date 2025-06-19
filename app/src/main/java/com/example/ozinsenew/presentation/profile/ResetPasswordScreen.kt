@@ -13,8 +13,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -88,10 +86,10 @@ fun ResetPasswordScreen(navController: NavHostController) {
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = Color(0xFF_111827),
                 ),
-
             )
         }
-    ) { it
+    ) {
+        it
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -217,7 +215,7 @@ fun ResetPasswordScreen(navController: NavHostController) {
                             colorFilter = ColorFilter.tint(Gray)
                         )
                     },
-                    visualTransformation = if (isPasswordVisibleSecond) androidx.compose.ui.text.input.VisualTransformation.None else androidx.compose.ui.text.input.PasswordVisualTransformation()
+                    visualTransformation = if (isPasswordVisibleSecond) VisualTransformation.None else PasswordVisualTransformation()
                 )
                 Spacer(modifier = Modifier.weight(1f))
                 Button(

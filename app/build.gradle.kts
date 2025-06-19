@@ -49,6 +49,10 @@ android {
 }
 
 dependencies {
+
+    implementation("com.google.accompanist:accompanist-placeholder-material:0.32.0")
+
+    implementation("io.coil-kt:coil-compose:2.4.0")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.10.2")
     implementation("androidx.room:room-runtime:2.7.1")
     implementation("androidx.room:room-ktx:2.7.1")

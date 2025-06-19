@@ -1,10 +1,10 @@
 package com.example.ozinsenew.presentation.home
 
-//noinspection UsingMaterialAndMaterial3Libraries
-import android.util.Log
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,7 +19,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
-//noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.TabRowDefaults.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
@@ -28,19 +27,21 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
+import coil.compose.AsyncImage
 import com.example.ozinsenew.R
 import com.example.ozinsenew.navigation.Screen
 import com.example.ozinsenew.navigation.route
@@ -55,15 +56,9 @@ import com.example.ozinsenew.viewmodels.ListViewModel
 @Composable
 fun BookmarksScreen(
     listViewModel: ListViewModel,
-    category: String,
     navController: NavHostController
 ) {
-    val itemsList by remember { listViewModel.allItems }.collectAsState(initial = emptyList())
-    val bookmarks by listViewModel
-        .getItemsByCategory(category)
-        .collectAsState(initial = emptyList())
-    Log.d("BookmarkScreen", "Bookmarks count: ${bookmarks.size}")
-
+    val categoryItems by listViewModel.allItems.collectAsStateWithLifecycle()
 
     Scaffold(
         topBar = {
@@ -92,35 +87,48 @@ fun BookmarksScreen(
         }
     ) { innerPadding ->
 
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Background)
-                .padding(innerPadding),
-            contentPadding = PaddingValues(
-                start = 24.dp,
-                end = 24.dp,
-                bottom = 70.dp,
-                top = 24.dp
-            )
-        ) {
-            itemsIndexed(itemsList) { index, item ->
-                ImageBox(
-                    image = item.image,
-                    title = item.name,
-                    data = item.data,
-                    onClick = {
-                        navController.navigate(Screen.DetailScreen(item.id).route())
-                    }
+        if (categoryItems.isEmpty()) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Background)
+                    .padding(innerPadding),
+                contentAlignment = Alignment.Center
+            ) {
+                Text("Тізім жоқ", color = Color.White)
+            }
+        } else {
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Background)
+                    .padding(innerPadding),
+                contentPadding = PaddingValues(
+                    start = 24.dp,
+                    end = 24.dp,
+                    top = 24.dp,
+                    bottom = 100.dp
                 )
-                if (index != bookmarks.lastIndex) {
-                    Spacer(modifier = Modifier.height(24.dp))
-                    Divider(
-                        color = BoxGray,
-                        thickness = 1.dp,
-                        modifier = Modifier.fillMaxWidth()
+            ) {
+                itemsIndexed(categoryItems) { index, item ->
+                    ImageBox(
+                        image = item.image,
+                        title = item.name,
+                        data = item.data,
+                        onClick = {
+                            navController.navigate(Screen.DetailScreen(item.id).route())
+                        }
                     )
-                    Spacer(modifier = Modifier.height(24.dp))
+
+                    if (index != categoryItems.lastIndex) {
+                        Spacer(modifier = Modifier.height(24.dp))
+                        Divider(
+                            color = BoxGray,
+                            thickness = 1.dp,
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                        Spacer(modifier = Modifier.height(24.dp))
+                    }
                 }
             }
         }
@@ -134,7 +142,13 @@ fun ImageBox(
     data: String,
     onClick: () -> Unit
 ) {
-    val imagePainter = painterResource(id = image)
+    var pressed by remember { mutableStateOf(false) }
+    val backgroundColor by animateColorAsState(
+        targetValue = if (pressed) BoxGray.copy(alpha = 0.6f) else BoxGray,
+        label = "BoxColor"
+    )
+
+    val interactionSource = remember { MutableInteractionSource() }
 
     Row(
         modifier = Modifier
@@ -147,9 +161,11 @@ fun ImageBox(
                 .size(80.dp, 110.dp)
         ) {
             Image(
-                painter = imagePainter,
+                painter = painterResource(id = image),
                 contentDescription = "Avatar",
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier
+                    .clip(RoundedCornerShape(8.dp))
+                    .size(80.dp, 110.dp)
             )
         }
         Column {
@@ -163,30 +179,34 @@ fun ImageBox(
                 text = data,
                 style = Typography.labelSmall,
                 color = White,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
+                maxLines = 1
             )
             Spacer(Modifier.height(24.dp))
             Box(
                 modifier = Modifier
                     .clip(RoundedCornerShape(8.dp))
-                    .background(BoxGray)
-                    .clickable(onClick = onClick)
+                    .background(backgroundColor)
+                    .clickable(
+                        interactionSource = interactionSource,
+                        indication = null,
+                        onClick = onClick
+                    )
             ) {
                 Row(
-                    modifier = Modifier.padding(vertical = 1.dp, horizontal = 12.dp),
+                    modifier = Modifier
+                        .padding(vertical = 1.dp, horizontal = 12.dp),
                     horizontalArrangement = Arrangement.spacedBy(10.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.ic_playsmall),
-                        contentDescription = ""
+                    AsyncImage(
+                        model = R.drawable.ic_playsmall,
+                        contentDescription = null,
+                        modifier = Modifier.size(12.dp)
                     )
                     Text(
                         text = "Қарау",
                         color = TextPink,
-                        fontSize = 12.sp,
-                        fontWeight = FontWeight.Bold
+                        fontSize = 12.sp
                     )
                 }
             }

@@ -18,11 +18,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
+//noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.Button
+//noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
-import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -118,7 +119,10 @@ fun ProfileScreen(navController: NavController, viewModel: ViewModel) {
                                 }
                             )
                             if (index != languages.lastIndex) {
-                                Divider(color = Color(0xFF374151), thickness = 1.dp)
+                                HorizontalDivider(
+                                    thickness = 1.dp,
+                                    color = Color(0xFF374151)
+                                )
                             }
                         }
                     }
@@ -357,7 +361,7 @@ fun ToggleSwitch(onClick: () -> Unit = {}) {
         },
         colors = SwitchDefaults.colors(
             checkedThumbColor = Color.White,
-            checkedTrackColor = activeColor
+            checkedTrackColor = activeColor,
         )
     )
 }

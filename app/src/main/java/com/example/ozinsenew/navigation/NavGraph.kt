@@ -99,7 +99,6 @@ fun NavGraph(
             backStackEntry.arguments?.getString("category")?.let { category ->
                 BookmarksScreen(
                     listViewModel = listViewModel,
-                    category = category,
                     navController = navController
                 )
             }
