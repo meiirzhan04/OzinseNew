@@ -22,6 +22,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -32,7 +33,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Color.Companion.Gray
+import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
@@ -40,16 +45,8 @@ import androidx.navigation.NavController
 import com.example.ozinsenew.R
 import com.example.ozinsenew.navigation.Screen
 import com.example.ozinsenew.navigation.route
-import com.example.ozinsenew.ui.theme.Background
-import com.example.ozinsenew.ui.theme.BorderGray
-import com.example.ozinsenew.ui.theme.BoxGray
-import com.example.ozinsenew.ui.theme.DarkGray
-import com.example.ozinsenew.ui.theme.ErrorRed
-import com.example.ozinsenew.ui.theme.Gray
-import com.example.ozinsenew.ui.theme.Pink
-import com.example.ozinsenew.ui.theme.TextPink
+import com.example.ozinsenew.ui.theme.Grey400
 import com.example.ozinsenew.ui.theme.Typography
-import com.example.ozinsenew.ui.theme.White
 import com.example.ozinsenew.viewmodels.ViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -75,11 +72,11 @@ fun LoginScreen(
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
                             contentDescription = "Back",
-                            tint = White,
+                            tint = MaterialTheme.colorScheme.onPrimaryContainer,
                         )
                     }
                 },
-                backgroundColor = Background,
+                backgroundColor = MaterialTheme.colorScheme.background,
                 elevation = 0.dp,
                 modifier = Modifier.padding(top = 32.dp)
             )
@@ -88,19 +85,20 @@ fun LoginScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Background)
+                .background(MaterialTheme.colorScheme.background)
                 .padding(innerPadding)
                 .padding(horizontal = 24.dp),
         ) {
             Text(
                 text = "Сәлем",
-                color = White,
+                color = MaterialTheme.colorScheme.onPrimaryContainer,
                 style = Typography.headlineSmall,
+                fontWeight = FontWeight.Bold
             )
             Spacer(modifier = Modifier.height(16.dp))
             Text(
                 text = "Аккаунтқа кіріңіз",
-                color = Gray,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
                 style = Typography.bodyLarge,
             )
             Spacer(modifier = Modifier.height(30.dp))
@@ -120,7 +118,7 @@ fun LoginScreen(
             if (isClicked.value && !isValidEmail(email) && email.isNotEmpty() && password.isNotEmpty()) {
                 Text(
                     text = "Қате формат",
-                    color = ErrorRed,
+                    color = Color(0xFF_FF402B),
                     style = Typography.bodySmall,
                 )
                 Spacer(modifier = Modifier.height(16.dp))
@@ -147,7 +145,7 @@ fun LoginScreen(
             ) {
                 Text(
                     text = "Құпия сөзді ұмыттыңыз ба?",
-                    color = TextPink,
+                    color = Color(0xFF_B376F7),
                     style = Typography.bodySmall,
                 )
             }
@@ -175,7 +173,7 @@ fun LoginScreen(
                 shape = RoundedCornerShape(12.dp),
                 modifier = Modifier.fillMaxWidth(),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = Pink
+                    containerColor = Color(0xFF_7E2DFC)
                 )
             ) {
                 Text(
@@ -195,12 +193,12 @@ fun LoginScreen(
                 Row {
                     Text(
                         text = "Аккаунтыныз жоқ па? ",
-                        color = White,
+                        color = MaterialTheme.colorScheme.onSecondaryContainer,
                         style = Typography.bodyMedium,
                     )
                     Text(
                         text = "Тіркелу",
-                        color = TextPink,
+                        color = Color(0xFF_B376F7),
                         style = Typography.bodySmall,
                     )
                 }
@@ -208,7 +206,7 @@ fun LoginScreen(
             Spacer(modifier = Modifier.height(40.dp))
             Text(
                 text = "Немесе",
-                color = Gray,
+                color = Grey400,
                 style = Typography.bodyMedium,
                 modifier = Modifier.align(Alignment.CenterHorizontally)
             )
@@ -216,13 +214,15 @@ fun LoginScreen(
             ButtonBox(
                 image = R.drawable.ic_apple,
                 onClick = {},
-                text = "Apple ID"
+                text = "Apple ID",
+                containerColor = MaterialTheme.colorScheme.secondary
             )
             Spacer(modifier = Modifier.height(16.dp))
             ButtonBox(
                 image = R.drawable.ic_google,
                 onClick = {},
-                text = "Google"
+                text = "Google",
+                containerColor = MaterialTheme.colorScheme.secondary
             )
         }
     }
@@ -244,7 +244,7 @@ fun TextFieldBox(
     Text(
         text = text,
         style = Typography.bodySmall,
-        color = White
+        color = MaterialTheme.colorScheme.onPrimaryContainer
     )
     Spacer(modifier = Modifier.height(8.dp))
     OutlinedTextField(
@@ -254,17 +254,17 @@ fun TextFieldBox(
             Text(
                 text = placeholder,
                 style = Typography.bodyLarge,
-                color = Gray
+                color = MaterialTheme.colorScheme.surface
             )
         },
         shape = RoundedCornerShape(12.dp),
         modifier = Modifier.fillMaxWidth(),
         textStyle = Typography.bodyLarge,
         colors = androidx.compose.material.TextFieldDefaults.outlinedTextFieldColors(
-            backgroundColor = BoxGray,
-            focusedBorderColor = if (isError) ErrorRed else Pink,
-            unfocusedBorderColor = if (isError) ErrorRed else BorderGray,
-            textColor = White,
+            backgroundColor = MaterialTheme.colorScheme.background,
+            focusedBorderColor = if (isError) Color(0xFF_FF402B) else Color(0xFF_B376F7),
+            unfocusedBorderColor = if (isError) Color(0xFF_FF402B) else MaterialTheme.colorScheme.secondary,
+            textColor = MaterialTheme.colorScheme.onPrimaryContainer,
         ),
         leadingIcon = {
             Image(
@@ -284,7 +284,7 @@ fun TextFieldBox(
                             id = if (!isSee) R.drawable.ic_eye_open else R.drawable.ic_eye_close
                         ),
                         contentDescription = "Email",
-                        tint = Gray,
+                        tint = Grey400,
                     )
                 }
             }
@@ -297,14 +297,15 @@ fun TextFieldBox(
 fun ButtonBox(
     image: Int,
     onClick: () -> Unit,
-    text: String
+    text: String,
+    containerColor: Color
 ) {
     Button(
         onClick = {},
         shape = RoundedCornerShape(12.dp),
         modifier = Modifier.fillMaxWidth(),
         colors = ButtonDefaults.buttonColors(
-            containerColor = DarkGray
+            containerColor = containerColor
         )
     ) {
         Image(
@@ -313,7 +314,7 @@ fun ButtonBox(
         )
         Text(
             text = "$text-мен тіркеліңіз",
-            color = White,
+            color = MaterialTheme.colorScheme.onPrimaryContainer,
             style = Typography.bodySmall,
             modifier = Modifier.padding(horizontal = 16.dp, vertical = 16.dp)
         )

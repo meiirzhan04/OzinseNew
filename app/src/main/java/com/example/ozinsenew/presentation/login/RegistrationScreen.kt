@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+//noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
@@ -21,6 +22,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -31,18 +33,17 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Color.Companion.Gray
+import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.ozinsenew.R
 import com.example.ozinsenew.navigation.Screen
 import com.example.ozinsenew.navigation.route
-import com.example.ozinsenew.ui.theme.Background
-import com.example.ozinsenew.ui.theme.Gray
-import com.example.ozinsenew.ui.theme.Pink
-import com.example.ozinsenew.ui.theme.TextPink
 import com.example.ozinsenew.ui.theme.Typography
-import com.example.ozinsenew.ui.theme.White
 import com.example.ozinsenew.viewmodels.ViewModel
+import com.google.firebase.annotations.concurrent.Background
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -67,11 +68,11 @@ fun RegisterScreen(
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
                             contentDescription = "Back",
-                            tint = White,
+                            tint = MaterialTheme.colorScheme.onPrimaryContainer,
                         )
                     }
                 },
-                backgroundColor = Background,
+                backgroundColor = MaterialTheme.colorScheme.background,
                 elevation = 0.dp,
                 modifier = Modifier.padding(top = 32.dp)
             )
@@ -80,19 +81,19 @@ fun RegisterScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Background)
+                .background(MaterialTheme.colorScheme.background)
                 .padding(innerPadding)
-                .padding(24.dp),
+                .padding(horizontal = 24.dp),
         ) {
             Text(
                 text = "Тіркелу",
-                color = White,
+                color = MaterialTheme.colorScheme.onPrimaryContainer,
                 style = Typography.headlineSmall,
             )
             Spacer(modifier = Modifier.height(16.dp))
             Text(
                 text = "Деректерді толтырыңыз",
-                color = Gray,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
                 style = Typography.bodyLarge,
             )
             Spacer(modifier = Modifier.height(30.dp))
@@ -152,7 +153,7 @@ fun RegisterScreen(
                 shape = RoundedCornerShape(12.dp),
                 modifier = Modifier.fillMaxWidth(),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = Pink
+                    containerColor = Color(0xFF_7E2DFC)
                 )
             ) {
                 Text(
@@ -164,19 +165,21 @@ fun RegisterScreen(
             }
             Spacer(modifier = Modifier.height(24.dp))
             TextButton(
-                onClick = {},
+                onClick = {
+                    navController.navigate(Screen.LoginScreen.route())
+                },
                 enabled = true,
                 modifier = Modifier.align(Alignment.CenterHorizontally)
             ) {
                 Row {
                     Text(
                         text = "Сізде аккаунт бар ма? ",
-                        color = White,
+                        color = MaterialTheme.colorScheme.onSecondaryContainer,
                         style = Typography.bodyMedium,
                     )
                     Text(
                         text = "Кіру",
-                        color = TextPink,
+                        color = Color(0xFF_B376F7),
                         style = Typography.bodySmall,
                     )
                 }

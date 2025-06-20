@@ -20,6 +20,7 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -40,11 +41,8 @@ import com.example.ozinsenew.data.OnboardingPreferences
 import com.example.ozinsenew.data.startTextList
 import com.example.ozinsenew.navigation.Screen
 import com.example.ozinsenew.navigation.route
-import com.example.ozinsenew.ui.theme.Background
-import com.example.ozinsenew.ui.theme.Gray
-import com.example.ozinsenew.ui.theme.Pink
+import com.example.ozinsenew.ui.theme.Grey400
 import com.example.ozinsenew.ui.theme.Typography
-import com.example.ozinsenew.ui.theme.White
 import kotlinx.coroutines.launch
 
 @SuppressLint("UnusedBoxWithConstraintsScope")
@@ -79,7 +77,10 @@ fun OnboardingScreen(
                     .fillMaxSize()
                     .background(
                         Brush.verticalGradient(
-                            colors = listOf(Background, Color.Transparent),
+                            colors = listOf(
+                                MaterialTheme.colorScheme.background,
+                                Color.Transparent
+                            ),
                             startY = screenHeight.value * 1.6f,
                             endY = 0f
                         )
@@ -89,12 +90,12 @@ fun OnboardingScreen(
             if (pagerState.currentPage != startTextList.lastIndex) {
                 Text(
                     text = "Өткізу",
-                    color = Color.White,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer,
                     modifier = Modifier
                         .align(Alignment.TopEnd)
                         .padding(top = 48.dp, end = 16.dp)
                         .clip(RoundedCornerShape(12.dp))
-                        .background(Color(0xFF111827))
+                        .background(MaterialTheme.colorScheme.background)
                         .padding(horizontal = 16.dp, vertical = 4.dp)
                         .clickable {
                             scope.launch {
@@ -118,7 +119,7 @@ fun OnboardingScreen(
 
                 Text(
                     text = item.title,
-                    color = White,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer,
                     style = Typography.headlineSmall,
                     textAlign = TextAlign.Center
                 )
@@ -127,7 +128,7 @@ fun OnboardingScreen(
 
                 Text(
                     text = item.description,
-                    color = Gray,
+                    color = Grey400,
                     style = Typography.bodySmall,
                     textAlign = TextAlign.Center
                 )
@@ -151,8 +152,8 @@ fun OnboardingScreen(
                             }
                         },
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = Pink,
-                            contentColor = White
+                            containerColor = Color(0xFF_7E2DFC),
+                            contentColor = Color.White
                         ),
                         shape = RoundedCornerShape(12.dp),
                         modifier = Modifier.fillMaxWidth()

@@ -22,14 +22,20 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ripple
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Color.Companion.Gray
+import androidx.compose.ui.graphics.Color.Companion.White
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -38,12 +44,10 @@ import com.example.ozinsenew.R
 import com.example.ozinsenew.data.home.BoxData
 import com.example.ozinsenew.navigation.Screen
 import com.example.ozinsenew.navigation.route
-import com.example.ozinsenew.ui.theme.Background
-import com.example.ozinsenew.ui.theme.BoxGray
-import com.example.ozinsenew.ui.theme.Gray
-import com.example.ozinsenew.ui.theme.Pink
+import com.example.ozinsenew.ui.theme.Grey100
+import com.example.ozinsenew.ui.theme.Grey400
+import com.example.ozinsenew.ui.theme.Red500
 import com.example.ozinsenew.ui.theme.Typography
-import com.example.ozinsenew.ui.theme.White
 import com.example.ozinsenew.viewmodels.ViewModel
 
 @SuppressLint("UnrememberedMutableInteractionSource")
@@ -57,16 +61,16 @@ fun HomeScreen(navController: NavHostController, viewModel: ViewModel) {
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Background)
+                .background(MaterialTheme.colorScheme.background)
                 .padding(innerPadding)
-                .padding(bottom = 65.dp)
+                .padding(bottom = 50.dp)
         ) {
             item {
                 Box(
                     modifier = Modifier
                         .padding(start = 24.dp, top = 24.dp)
                         .clip(shape = RoundedCornerShape(12.dp))
-                        .background(BoxGray)
+                        .background(MaterialTheme.colorScheme.primary)
                 ) {
                     Row(
                         modifier = Modifier.padding(horizontal = 10.dp, vertical = 10.dp)
@@ -78,6 +82,7 @@ fun HomeScreen(navController: NavHostController, viewModel: ViewModel) {
                         Image(
                             painterResource(R.drawable.ic_zinse),
                             contentDescription = "zinse",
+                            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimaryContainer)
                         )
                     }
                 }
@@ -100,9 +105,10 @@ fun HomeScreen(navController: NavHostController, viewModel: ViewModel) {
                 Spacer(modifier = Modifier.height(32.dp))
                 Text(
                     text = "Қарауды жалғастырыңыз",
+                    fontWeight = FontWeight.Bold,
                     style = Typography.bodyLarge,
-                    color = White,
-                    modifier = Modifier.padding(start = 24.dp)
+                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                    modifier = Modifier.padding(start = 24.dp),
                 )
                 Spacer(modifier = Modifier.height(16.dp))
                 LazyRow {
@@ -130,7 +136,8 @@ fun HomeScreen(navController: NavHostController, viewModel: ViewModel) {
                     Text(
                         text = "Трендтегілер",
                         style = Typography.bodyLarge,
-                        color = White,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer,
+                        fontWeight = FontWeight.Bold
                     )
                     TextButton(
                         onClick = {},
@@ -139,7 +146,7 @@ fun HomeScreen(navController: NavHostController, viewModel: ViewModel) {
                         Text(
                             text = "Барлығы",
                             style = Typography.bodySmall,
-                            color = Pink,
+                            color = Color(0xFF_B376F7),
                         )
                     }
                 }
@@ -194,7 +201,7 @@ fun BoxCard(
                     modifier = Modifier
                         .padding(8.dp)
                         .clip(RoundedCornerShape(8.dp))
-                        .background(Pink)
+                        .background(Red500)
                 ) {
                     Text(
                         text = "Телехикая",
@@ -210,13 +217,14 @@ fun BoxCard(
         Text(
             text = item.title,
             style = Typography.bodyMedium,
-            color = White
+            color = MaterialTheme.colorScheme.onPrimaryContainer,
+            fontWeight = FontWeight.Bold
         )
         Spacer(modifier = Modifier.height(8.dp))
         Text(
             text = item.description,
             style = Typography.bodySmall,
-            color = Gray,
+            color = Grey400,
             maxLines = 2,
             overflow = TextOverflow.Ellipsis
         )

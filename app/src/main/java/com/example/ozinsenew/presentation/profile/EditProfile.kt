@@ -1,9 +1,16 @@
 package com.example.ozinsenew.presentation.profile
 
+//noinspection UsingMaterialAndMaterial3Libraries
+//noinspection UsingMaterialAndMaterial3Libraries
+//noinspection UsingMaterialAndMaterial3Libraries
+//noinspection UsingMaterialAndMaterial3Libraries
+//noinspection UsingMaterialAndMaterial3Libraries
+//noinspection UsingMaterialAndMaterial3Libraries
 import android.content.Context
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,17 +18,16 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-//noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.IconButton
-//noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.OutlinedTextField
-//noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.TextFieldDefaults
+import androidx.compose.material.ripple
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -44,9 +50,8 @@ import androidx.compose.ui.unit.sp
 import androidx.core.content.edit
 import androidx.navigation.NavHostController
 import com.example.ozinsenew.R
-import com.example.ozinsenew.ui.theme.Background
+import com.example.ozinsenew.ui.theme.Red400
 import com.example.ozinsenew.ui.theme.Typography
-import com.example.ozinsenew.ui.theme.White
 import com.example.ozinsenew.viewmodels.ViewModel
 import com.google.firebase.auth.FirebaseAuth
 
@@ -72,18 +77,24 @@ fun EditProfile(navController: NavHostController, viewModel: ViewModel) {
                         modifier = Modifier.fillMaxWidth(),
                         textAlign = TextAlign.Center,
                         style = Typography.bodyLarge,
-                        color = White
+                        color = MaterialTheme.colorScheme.onPrimaryContainer
                     )
                 },
                 navigationIcon = {
                     Icon(
                         painter = painterResource(id = R.drawable.ic_back),
                         contentDescription = "Back",
-                        tint = White,
-                        modifier = Modifier.clickable { navController.popBackStack() }
+                        tint = MaterialTheme.colorScheme.onPrimaryContainer,
+                        modifier = Modifier.clickable(
+                            onClick = {
+                                navController.popBackStack()
+                            },
+                            indication = ripple(bounded = false),
+                            interactionSource = remember { MutableInteractionSource() }
+                        )
                     )
                 },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = Background),
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.background),
                 modifier = Modifier.padding(horizontal = 24.dp)
             )
         }
@@ -91,7 +102,7 @@ fun EditProfile(navController: NavHostController, viewModel: ViewModel) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Background)
+                .background(MaterialTheme.colorScheme.background)
                 .padding(innerPadding)
         ) {
             ProfileField(
@@ -171,7 +182,7 @@ fun EditProfile(navController: NavHostController, viewModel: ViewModel) {
 @Composable
 fun DividerLine() {
     HorizontalDivider(
-        color = Color(0xFF1C2431),
+        color = MaterialTheme.colorScheme.primaryContainer,
         thickness = 1.dp,
         modifier = Modifier.padding(horizontal = 24.dp)
     )
@@ -200,17 +211,16 @@ fun ProfileField(
         },
         readOnly = readOnly,
         textStyle = TextStyle(
-            color = Color.White,
+            color = MaterialTheme.colorScheme.onPrimaryContainer,
             fontSize = 16.sp,
             fontWeight = FontWeight.W500
         ),
         trailingIcon = trailingIcon,
         singleLine = true,
         colors = TextFieldDefaults.outlinedTextFieldColors(
-            cursorColor = Color.White,
+            cursorColor = Red400,
             focusedBorderColor = Color.Unspecified,
             unfocusedBorderColor = Color.Unspecified,
-            textColor = Color.White,
             focusedLabelColor = Color(0xFF8E8E93),
             unfocusedLabelColor = Color(0xFF8E8E93)
         ),

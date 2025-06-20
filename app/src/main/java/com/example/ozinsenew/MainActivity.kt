@@ -4,8 +4,9 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.activity.viewModels
+import androidx.compose.runtime.collectAsState
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.ozinsenew.data.theme.ThemeViewModel
 import com.example.ozinsenew.navigation.MainScreen
 import com.example.ozinsenew.ui.theme.OzinseNewTheme
 import com.example.ozinsenew.viewmodels.ListViewModel
@@ -18,10 +19,9 @@ class MainActivity : ComponentActivity() {
         FirebaseApp.initializeApp(this)
         enableEdgeToEdge()
         setContent {
-            val viewModel: ViewModel by viewModels()
-            OzinseNewTheme(
-                darkTheme = viewModel.isDarkTheme
-            ) {
+            val themeViewModel: ThemeViewModel = viewModel()
+            val isDark = themeViewModel.isDarkMode.collectAsState().value
+            OzinseNewTheme(darkTheme = isDark) {
                 val listViewModel: ListViewModel = viewModel()
                 MainScreen(
                     listViewModel = listViewModel

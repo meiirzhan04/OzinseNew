@@ -1,5 +1,6 @@
 package com.example.ozinsenew.presentation.home
 
+//noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -22,6 +23,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.TabRowDefaults.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -34,8 +36,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -45,11 +47,9 @@ import coil.compose.AsyncImage
 import com.example.ozinsenew.R
 import com.example.ozinsenew.navigation.Screen
 import com.example.ozinsenew.navigation.route
-import com.example.ozinsenew.ui.theme.Background
-import com.example.ozinsenew.ui.theme.BoxGray
-import com.example.ozinsenew.ui.theme.TextPink
+import com.example.ozinsenew.ui.theme.Grey400
+import com.example.ozinsenew.ui.theme.Red400
 import com.example.ozinsenew.ui.theme.Typography
-import com.example.ozinsenew.ui.theme.White
 import com.example.ozinsenew.viewmodels.ListViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -70,16 +70,16 @@ fun BookmarksScreen(
                             modifier = Modifier.fillMaxWidth(),
                             textAlign = TextAlign.Center,
                             style = Typography.bodyLarge,
-                            color = White
+                            color = MaterialTheme.colorScheme.onPrimaryContainer
                         )
                     },
-                    colors = TopAppBarDefaults.topAppBarColors(containerColor = Background),
+                    colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.background),
                     modifier = Modifier
-                        .background(Background)
+                        .background(MaterialTheme.colorScheme.background)
                         .padding(horizontal = 24.dp),
                 )
                 HorizontalDivider(
-                    color = BoxGray,
+                    color = MaterialTheme.colorScheme.primaryContainer,
                     thickness = 1.dp,
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -91,17 +91,17 @@ fun BookmarksScreen(
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(Background)
+                    .background(MaterialTheme.colorScheme.background)
                     .padding(innerPadding),
                 contentAlignment = Alignment.Center
             ) {
-                Text("Тізім жоқ", color = Color.White)
+                Text("Тізім жоқ", color = MaterialTheme.colorScheme.onPrimaryContainer)
             }
         } else {
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(Background)
+                    .background(MaterialTheme.colorScheme.background)
                     .padding(innerPadding),
                 contentPadding = PaddingValues(
                     start = 24.dp,
@@ -123,8 +123,7 @@ fun BookmarksScreen(
                     if (index != categoryItems.lastIndex) {
                         Spacer(modifier = Modifier.height(24.dp))
                         Divider(
-                            color = BoxGray,
-                            thickness = 1.dp,
+                            color = MaterialTheme.colorScheme.primaryContainer,
                             modifier = Modifier.fillMaxWidth()
                         )
                         Spacer(modifier = Modifier.height(24.dp))
@@ -144,7 +143,7 @@ fun ImageBox(
 ) {
     var pressed by remember { mutableStateOf(false) }
     val backgroundColor by animateColorAsState(
-        targetValue = if (pressed) BoxGray.copy(alpha = 0.6f) else BoxGray,
+        targetValue = if (pressed) MaterialTheme.colorScheme.primary.copy(alpha = 0.6f) else MaterialTheme.colorScheme.primary,
         label = "BoxColor"
     )
 
@@ -171,21 +170,22 @@ fun ImageBox(
         Column {
             Text(
                 text = title,
+                fontWeight = FontWeight.Bold,
                 style = Typography.bodySmall,
-                color = White
+                color = MaterialTheme.colorScheme.onPrimaryContainer
             )
             Spacer(Modifier.height(8.dp))
             Text(
                 text = data,
                 style = Typography.labelSmall,
-                color = White,
+                color = Grey400,
                 maxLines = 1
             )
             Spacer(Modifier.height(24.dp))
             Box(
                 modifier = Modifier
                     .clip(RoundedCornerShape(8.dp))
-                    .background(backgroundColor)
+                    .background(MaterialTheme.colorScheme.primary)
                     .clickable(
                         interactionSource = interactionSource,
                         indication = null,
@@ -205,7 +205,7 @@ fun ImageBox(
                     )
                     Text(
                         text = "Қарау",
-                        color = TextPink,
+                        color = Red400,
                         fontSize = 12.sp
                     )
                 }

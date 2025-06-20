@@ -20,13 +20,13 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.ripple
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
@@ -37,6 +37,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -45,13 +46,11 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.ozinsenew.R
 import com.example.ozinsenew.room.bookmark.ListItems
-import com.example.ozinsenew.ui.theme.Background
-import com.example.ozinsenew.ui.theme.BoxGray
-import com.example.ozinsenew.ui.theme.DarkGray
-import com.example.ozinsenew.ui.theme.Gray
-import com.example.ozinsenew.ui.theme.Pink
+import com.example.ozinsenew.ui.theme.Grey300
+import com.example.ozinsenew.ui.theme.Grey400
+import com.example.ozinsenew.ui.theme.Grey600
+import com.example.ozinsenew.ui.theme.Red300
 import com.example.ozinsenew.ui.theme.Typography
-import com.example.ozinsenew.ui.theme.White
 import com.example.ozinsenew.viewmodels.ListViewModel
 import com.example.ozinsenew.viewmodels.ViewModel
 import kotlinx.coroutines.launch
@@ -70,8 +69,8 @@ fun DetailScreen(
 
 
     val gradientColors = listOf(
-        Color(0xFF_E5E7EB),
-        Color(0xFF_E5E7EB).copy(alpha = 0f),
+        MaterialTheme.colorScheme.tertiaryContainer,
+        MaterialTheme.colorScheme.tertiaryContainer.copy(alpha = 0f),
     )
     val box = viewModel.getBoxById(itemId)
     box?.let {
@@ -152,7 +151,7 @@ fun DetailScreen(
                     .padding(top = 320.dp)
                     .padding(paddingValues)
                     .background(
-                        Background,
+                        MaterialTheme.colorScheme.background,
                         shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp)
                     ),
             ) {
@@ -160,19 +159,19 @@ fun DetailScreen(
                     Column(modifier = Modifier.padding(24.dp)) {
                         Text(
                             text = it.title,
-                            color = White,
+                            color = MaterialTheme.colorScheme.onPrimaryContainer,
                             fontSize = 22.sp,
                             fontWeight = FontWeight.Bold
                         )
                         Spacer(modifier = Modifier.height(8.dp))
                         Text(
                             text = "2020 • Телехикая • 5 сезон, 46 серия, 7 мин.",
-                            color = Gray,
+                            color = Grey400,
                             fontSize = 14.sp
                         )
                         Spacer(modifier = Modifier.height(24.dp))
                         HorizontalDivider(
-                            color = BoxGray,
+                            color = MaterialTheme.colorScheme.primaryContainer,
                             thickness = 1.dp,
                             modifier = Modifier.padding(bottom = 24.dp)
                         )
@@ -180,19 +179,26 @@ fun DetailScreen(
                         Spacer(modifier = Modifier.height(16.dp))
                         Text(
                             text = "Толығырақ",
-                            color = MaterialTheme.colors.primary,
+                            color = Red300,
+                            fontWeight = FontWeight.SemiBold,
+                            fontSize = 14.sp,
+                            modifier = Modifier.clickable(
+                                onClick = {},
+                                indication = ripple(bounded = true),
+                                interactionSource = MutableInteractionSource()
+                            )
                         )
                         Spacer(modifier = Modifier.height(24.dp))
                         Row {
                             Text(
                                 text = "Режиссер: ",
-                                color = DarkGray,
+                                color = Grey600,
                                 fontSize = 12.sp,
                                 fontWeight = FontWeight.W400
                             )
                             Text(
                                 text = "  Бақдәулет Әлімбеков",
-                                color = Gray,
+                                color = Grey400,
                                 fontSize = 12.sp,
                                 fontWeight = FontWeight.W400
                             )
@@ -201,20 +207,20 @@ fun DetailScreen(
                         Row {
                             Text(
                                 text = "Продюсер: ",
-                                color = DarkGray,
+                                color = Grey600,
                                 fontSize = 12.sp,
                                 fontWeight = FontWeight.W400
                             )
                             Text(
                                 text = " Сандуғаш Кенжебаева",
-                                color = Gray,
+                                color = Grey400,
                                 fontSize = 12.sp,
                                 fontWeight = FontWeight.W400
                             )
                         }
                         Spacer(modifier = Modifier.height(24.dp))
                         HorizontalDivider(
-                            color = BoxGray,
+                            color = MaterialTheme.colorScheme.primaryContainer,
                             thickness = 1.dp,
                             modifier = Modifier.padding(bottom = 24.dp)
                         )
@@ -224,7 +230,7 @@ fun DetailScreen(
                         ) {
                             Text(
                                 text = "Бөлімдер",
-                                color = White,
+                                color = MaterialTheme.colorScheme.onPrimaryContainer,
                                 fontWeight = FontWeight.Bold
                             )
                             Row(
@@ -233,12 +239,12 @@ fun DetailScreen(
                             ) {
                                 Text(
                                     text = "5 сезон, 46 серия",
-                                    color = Gray
+                                    color = Grey400
                                 )
                                 Icon(
                                     imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
                                     contentDescription = "Back",
-                                    tint = Pink
+                                    tint = Red300
                                 )
                             }
                         }
@@ -268,7 +274,7 @@ fun ElementBox(image: Int, text: String, onClick: () -> Unit = {}) {
         Text(
             text = text,
             fontSize = 12.sp,
-            color = Gray,
+            color = Grey300,
             fontWeight = FontWeight.W600
         )
     }

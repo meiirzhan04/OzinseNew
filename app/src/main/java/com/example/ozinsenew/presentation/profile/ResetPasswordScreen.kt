@@ -1,5 +1,7 @@
 package com.example.ozinsenew.presentation.profile
 
+//noinspection UsingMaterialAndMaterial3Libraries
+//noinspection UsingMaterialAndMaterial3Libraries
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -13,12 +15,14 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.OutlinedTextField
+import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -30,6 +34,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Color.Companion.Gray
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -44,8 +49,7 @@ import com.example.ozinsenew.R
 import com.example.ozinsenew.R.drawable.ic_eye_close
 import com.example.ozinsenew.R.drawable.ic_eye_open
 import com.example.ozinsenew.R.drawable.ic_passwrod
-import com.example.ozinsenew.ui.theme.BoxGray
-import com.example.ozinsenew.ui.theme.Gray
+import com.example.ozinsenew.ui.theme.Grey400
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -57,12 +61,14 @@ fun ResetPasswordScreen(navController: NavHostController) {
     Scaffold(
         topBar = {
             TopAppBar(
-                modifier = Modifier.padding(horizontal = 24.dp),
+                modifier = Modifier
+                    .background(MaterialTheme.colorScheme.background)
+                    .padding(horizontal = 24.dp),
                 title = {
                     Text(
                         text = "Құпия сөзді өзгерту",
                         modifier = Modifier.fillMaxWidth(),
-                        color = Color.White,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer,
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
                         textAlign = TextAlign.Center
@@ -72,7 +78,7 @@ fun ResetPasswordScreen(navController: NavHostController) {
                     Icon(
                         painter = painterResource(id = R.drawable.ic_back),
                         contentDescription = null,
-                        tint = Color.White,
+                        tint = MaterialTheme.colorScheme.onPrimaryContainer,
                         modifier = Modifier
                             .clickable(
                                 onClick = {
@@ -84,7 +90,7 @@ fun ResetPasswordScreen(navController: NavHostController) {
                     )
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color(0xFF_111827),
+                    containerColor = MaterialTheme.colorScheme.background,
                 ),
             )
         }
@@ -93,11 +99,11 @@ fun ResetPasswordScreen(navController: NavHostController) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color(0xFF_111827))
+                .background(MaterialTheme.colorScheme.background)
                 .padding(it)
         ) {
             HorizontalDivider(
-                color = BoxGray,
+                color = MaterialTheme.colorScheme.primaryContainer,
                 thickness = 1.dp
             )
             Column(
@@ -107,7 +113,7 @@ fun ResetPasswordScreen(navController: NavHostController) {
             ) {
                 Text(
                     text = "Құпия сөз",
-                    color = Color.White,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer,
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Bold,
                 )
@@ -116,7 +122,7 @@ fun ResetPasswordScreen(navController: NavHostController) {
                 OutlinedTextField(
                     value = passwordFirst,
                     textStyle = TextStyle(
-                        color = Color.White,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer,
                         textAlign = TextAlign.Start,
                         fontSize = 16.sp,
                         fontWeight = FontWeight.W400,
@@ -131,11 +137,17 @@ fun ResetPasswordScreen(navController: NavHostController) {
                     placeholder = {
                         Text(
                             text = "Сіздің құпия сөзіңіз",
-                            color = Color(0xFF_9CA3AF),
+                            color = Grey400,
                             fontSize = 16.sp,
                             fontWeight = FontWeight.W400,
                         )
                     },
+                    colors = TextFieldDefaults.outlinedTextFieldColors(
+                        backgroundColor = MaterialTheme.colorScheme.background,
+                        focusedBorderColor = Color(0xFF_B376F7),
+                        unfocusedBorderColor = MaterialTheme.colorScheme.secondary,
+                        textColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                    ),
                     leadingIcon = {
                         Icon(
                             painter = painterResource(id = ic_passwrod),
@@ -156,7 +168,7 @@ fun ResetPasswordScreen(navController: NavHostController) {
                                     indication = null,
                                     interactionSource = remember { MutableInteractionSource() }
                                 ),
-                            colorFilter = ColorFilter.tint(Gray)
+                            colorFilter = ColorFilter.tint(Grey400)
                         )
                     },
                     visualTransformation = if (isPasswordVisibleFirst) VisualTransformation.None else PasswordVisualTransformation()
@@ -164,7 +176,7 @@ fun ResetPasswordScreen(navController: NavHostController) {
                 Spacer(Modifier.height(24.dp))
                 Text(
                     text = "Құпия сөзді қайталаңыз",
-                    color = Color.White,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer,
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Bold,
                 )
@@ -176,13 +188,19 @@ fun ResetPasswordScreen(navController: NavHostController) {
                         passwordSecond = it
                     },
                     textStyle = TextStyle(
-                        color = Color.White,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer,
                         fontSize = 16.sp,
                         fontWeight = FontWeight.W400,
                     ),
                     modifier = Modifier
                         .fillMaxWidth(),
                     shape = RoundedCornerShape(16.dp),
+                    colors = TextFieldDefaults.outlinedTextFieldColors(
+                        backgroundColor = MaterialTheme.colorScheme.background,
+                        focusedBorderColor = Color(0xFF_B376F7),
+                        unfocusedBorderColor = MaterialTheme.colorScheme.secondary,
+                        textColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                    ),
                     placeholder = {
                         Text(
                             text = "Сіздің құпия сөзіңіз",

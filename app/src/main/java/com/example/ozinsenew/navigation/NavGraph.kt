@@ -89,7 +89,21 @@ fun NavGraph(
         }
 
         composable(Screen.SearchScreen.route()) {
-            SearchScreen(navController = navController)
+            SearchScreen(
+                navController = navController,
+                categories = listOf(
+                    "Телехикая",
+                    "Ситком",
+                    "Көркем фильм",
+                    "Мультфильм",
+                    "Мультсериал",
+                    "Аниме",
+                    "Тв-бағдарлама және реалити-шоу"
+                ),
+                selectedCategory = null,
+                onCategorySelected = {},
+                viewModel = viewModel()
+            )
         }
 
         composable(

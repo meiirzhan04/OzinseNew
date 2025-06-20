@@ -13,10 +13,10 @@ import com.example.ozinsenew.room.bookmark.ListRepository
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.flow.Flow
 
+@Suppress("DEPRECATION")
 class ViewModel(application: Application) : AndroidViewModel(application) {
     private val readAllData: Flow<List<ListItems>>
     private val repository: ListRepository
-    var isDarkTheme by mutableStateOf(false)
     private val auth = FirebaseAuth.getInstance()
 
     init {
@@ -99,6 +99,10 @@ class ViewModel(application: Application) : AndroidViewModel(application) {
         return (headBoxData + middleBoxData + boxData).find { it.id == id }
     }
 
+    fun allBoxData(): List<BoxData> {
+        return headBoxData + middleBoxData + boxData
+    }
+
     fun register(email: String, password: String) {
         auth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener { task ->
@@ -139,6 +143,5 @@ class ViewModel(application: Application) : AndroidViewModel(application) {
         auth.signOut()
         isAuthenticated = false
     }
-
 
 }
