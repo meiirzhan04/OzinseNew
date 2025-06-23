@@ -1,6 +1,7 @@
 package com.example.ozinsenew.presentation.home
 
 import android.annotation.SuppressLint
+import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -39,6 +40,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -52,7 +54,7 @@ import com.example.ozinsenew.ui.theme.Grey600
 import com.example.ozinsenew.ui.theme.Red300
 import com.example.ozinsenew.ui.theme.Typography
 import com.example.ozinsenew.viewmodels.ListViewModel
-import com.example.ozinsenew.viewmodels.ViewModel
+import com.example.ozinsenew.viewmodels.MainViewModel
 import kotlinx.coroutines.launch
 
 @SuppressLint("UnrememberedMutableInteractionSource")
@@ -60,77 +62,71 @@ import kotlinx.coroutines.launch
 fun DetailScreen(
     navController: NavController,
     itemId: Int,
-    viewModel: ViewModel,
+    viewModel: MainViewModel,
     listViewModel: ListViewModel,
     paddingValues: PaddingValues
 ) {
     val scope = rememberCoroutineScope()
     val isBookmarked = remember { mutableStateOf(false) }
-
+    val interactionSource = remember { MutableInteractionSource() }
+    val context = LocalContext.current
 
     val gradientColors = listOf(
         MaterialTheme.colorScheme.tertiaryContainer,
         MaterialTheme.colorScheme.tertiaryContainer.copy(alpha = 0f),
     )
+
     val box = viewModel.getBoxById(itemId)
+
     box?.let {
-        LaunchedEffect(Unit) {
+        LaunchedEffect(itemId) {
             val currentItem = ListItems(
-                name = box.title,
-                image = box.image,
-                data = box.description,
-                category = box.category
+                name = it.title,
+                image = it.image,
+                data = it.description,
+                category = it.category
             )
             isBookmarked.value = listViewModel.isBookmarked(currentItem)
         }
-        Box(
-            modifier = Modifier.fillMaxSize(),
-        ) {
+
+        Box(modifier = Modifier.fillMaxSize()) {
             Image(
                 painter = painterResource(it.image),
                 contentDescription = null,
                 modifier = Modifier
                     .fillMaxWidth()
                     .fillMaxHeight(0.5f),
-                contentScale = ContentScale.Crop,
+                contentScale = ContentScale.Crop
             )
             IconButton(
-                onClick = {},
+                onClick = { navController.popBackStack() },
                 modifier = Modifier
-                    .padding(horizontal = 14.dp, vertical = 36.dp)
+                    .padding(start = 24.dp, top = 36.dp)
                     .align(Alignment.TopStart)
             ) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
                     contentDescription = "Back",
-                    tint = White,
-                    modifier = Modifier.clickable(
-                        onClick = {
-                            navController.popBackStack()
-                        },
-                        indication = ripple(bounded = false),
-                        interactionSource = MutableInteractionSource()
-                    )
+                    tint = White
                 )
             }
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .fillMaxHeight(0.6f),
+                    .fillMaxHeight(0.65f),
                 horizontalArrangement = Arrangement.SpaceEvenly,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 ElementBox(
-                    if (isBookmarked.value) R.drawable.ic_bookmark_pink else R.drawable.ic_bookmark,
-                    "Тізімге қосу",
+                    image = if (isBookmarked.value) R.drawable.ic_bookmark_pink else R.drawable.ic_bookmark,
+                    text = "Тізімге қосу",
                     onClick = {
                         scope.launch {
-
                             val item = ListItems(
-                                name = box.title,
-                                image = box.image,
-                                data = box.description,
-                                category = box.category
+                                name = it.title,
+                                image = it.image,
+                                data = it.description,
+                                category = it.category
                             )
                             if (isBookmarked.value) {
                                 listViewModel.delete(item)
@@ -139,21 +135,25 @@ fun DetailScreen(
                             }
                             isBookmarked.value = !isBookmarked.value
                         }
-                    },
+                    }
                 )
-                ElementBox(R.drawable.ic_play, "")
-                ElementBox(R.drawable.ic_share, "Бөлісу")
+                ElementBox(image = R.drawable.ic_play, text = "") {
+                    val videoUri =
+                        Uri.encode("android.resource://${context.packageName}/${R.raw.sdudentday}")
+                    navController.navigate("video_player?uri=$videoUri")
+                }
+                ElementBox(image = R.drawable.ic_share, text = "Бөлісу")
             }
+
             LazyColumn(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .fillMaxHeight()
+                    .fillMaxSize()
                     .padding(top = 320.dp)
                     .padding(paddingValues)
                     .background(
                         MaterialTheme.colorScheme.background,
                         shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp)
-                    ),
+                    )
             ) {
                 item {
                     Column(modifier = Modifier.padding(24.dp)) {
@@ -183,9 +183,9 @@ fun DetailScreen(
                             fontWeight = FontWeight.SemiBold,
                             fontSize = 14.sp,
                             modifier = Modifier.clickable(
-                                onClick = {},
                                 indication = ripple(bounded = true),
-                                interactionSource = MutableInteractionSource()
+                                interactionSource = interactionSource,
+                                onClick = {}
                             )
                         )
                         Spacer(modifier = Modifier.height(24.dp))
@@ -193,14 +193,12 @@ fun DetailScreen(
                             Text(
                                 text = "Режиссер: ",
                                 color = Grey600,
-                                fontSize = 12.sp,
-                                fontWeight = FontWeight.W400
+                                fontSize = 12.sp
                             )
                             Text(
                                 text = "  Бақдәулет Әлімбеков",
                                 color = Grey400,
-                                fontSize = 12.sp,
-                                fontWeight = FontWeight.W400
+                                fontSize = 12.sp
                             )
                         }
                         Spacer(Modifier.height(8.dp))
@@ -208,14 +206,12 @@ fun DetailScreen(
                             Text(
                                 text = "Продюсер: ",
                                 color = Grey600,
-                                fontSize = 12.sp,
-                                fontWeight = FontWeight.W400
+                                fontSize = 12.sp
                             )
                             Text(
                                 text = " Сандуғаш Кенжебаева",
                                 color = Grey400,
-                                fontSize = 12.sp,
-                                fontWeight = FontWeight.W400
+                                fontSize = 12.sp
                             )
                         }
                         Spacer(modifier = Modifier.height(24.dp))
@@ -243,7 +239,7 @@ fun DetailScreen(
                                 )
                                 Icon(
                                     imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
-                                    contentDescription = "Back",
+                                    contentDescription = null,
                                     tint = Red300
                                 )
                             }

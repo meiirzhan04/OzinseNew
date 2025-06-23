@@ -19,6 +19,7 @@ import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -60,14 +61,13 @@ fun ResetPasswordScreen(navController: NavHostController) {
     var isPasswordVisibleSecond by remember { mutableStateOf(false) }
     Scaffold(
         topBar = {
-            TopAppBar(
+            CenterAlignedTopAppBar(
                 modifier = Modifier
                     .background(MaterialTheme.colorScheme.background)
                     .padding(horizontal = 24.dp),
                 title = {
                     Text(
                         text = "Құпия сөзді өзгерту",
-                        modifier = Modifier.fillMaxWidth(),
                         color = MaterialTheme.colorScheme.onPrimaryContainer,
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,

@@ -12,6 +12,7 @@ interface ListItemsDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(item: ListItems)
 
+
     @Query("DELETE FROM listitems WHERE name = :name AND data = :data AND image = :image AND category = :category")
     suspend fun deleteByFields(name: String, data: String, image: Int, category: String)
 
@@ -23,6 +24,10 @@ interface ListItemsDao {
 
     @Query("SELECT EXISTS(SELECT 1 FROM listitems WHERE name = :name AND data = :data AND image = :image AND category = :category)")
     suspend fun isBookmarked(name: String, data: String, image: Int, category: String): Boolean
+
+    @Delete
+    suspend fun delete(item: ListItems)
+
 }
 
 

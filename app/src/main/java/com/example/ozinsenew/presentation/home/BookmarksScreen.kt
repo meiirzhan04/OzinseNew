@@ -1,7 +1,6 @@
 package com.example.ozinsenew.presentation.home
 
 //noinspection UsingMaterialAndMaterial3Libraries
-import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -20,22 +19,22 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
+//noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.TabRowDefaults.Divider
+import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -44,6 +43,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.example.ozinsenew.R
 import com.example.ozinsenew.navigation.Screen
 import com.example.ozinsenew.navigation.route
@@ -63,11 +63,10 @@ fun BookmarksScreen(
     Scaffold(
         topBar = {
             Column {
-                TopAppBar(
+                CenterAlignedTopAppBar(
                     title = {
                         Text(
                             text = "Тізім",
-                            modifier = Modifier.fillMaxWidth(),
                             textAlign = TextAlign.Center,
                             style = Typography.bodyLarge,
                             color = MaterialTheme.colorScheme.onPrimaryContainer
@@ -110,7 +109,10 @@ fun BookmarksScreen(
                     bottom = 100.dp
                 )
             ) {
-                itemsIndexed(categoryItems) { index, item ->
+                itemsIndexed(
+                    categoryItems,
+                    key = { _, item -> item.id }
+                ) { index, item ->
                     ImageBox(
                         image = item.image,
                         title = item.name,
@@ -141,32 +143,23 @@ fun ImageBox(
     data: String,
     onClick: () -> Unit
 ) {
-    var pressed by remember { mutableStateOf(false) }
-    val backgroundColor by animateColorAsState(
-        targetValue = if (pressed) MaterialTheme.colorScheme.primary.copy(alpha = 0.6f) else MaterialTheme.colorScheme.primary,
-        label = "BoxColor"
-    )
-
     val interactionSource = remember { MutableInteractionSource() }
 
     Row(
-        modifier = Modifier
-            .fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(20.dp)
     ) {
-        Box(
+        AsyncImage(
+            model = ImageRequest.Builder(LocalContext.current)
+                .data(image)
+                .crossfade(true)
+                .build(),
+            contentDescription = "Avatar",
             modifier = Modifier
                 .clip(RoundedCornerShape(8.dp))
                 .size(80.dp, 110.dp)
-        ) {
-            Image(
-                painter = painterResource(id = image),
-                contentDescription = "Avatar",
-                modifier = Modifier
-                    .clip(RoundedCornerShape(8.dp))
-                    .size(80.dp, 110.dp)
-            )
-        }
+        )
+
         Column {
             Text(
                 text = title,
@@ -182,6 +175,7 @@ fun ImageBox(
                 maxLines = 1
             )
             Spacer(Modifier.height(24.dp))
+
             Box(
                 modifier = Modifier
                     .clip(RoundedCornerShape(8.dp))
@@ -193,13 +187,12 @@ fun ImageBox(
                     )
             ) {
                 Row(
-                    modifier = Modifier
-                        .padding(vertical = 1.dp, horizontal = 12.dp),
+                    modifier = Modifier.padding(vertical = 1.dp, horizontal = 12.dp),
                     horizontalArrangement = Arrangement.spacedBy(10.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    AsyncImage(
-                        model = R.drawable.ic_playsmall,
+                    Image(
+                        painter = painterResource(id = R.drawable.ic_playsmall),
                         contentDescription = null,
                         modifier = Modifier.size(12.dp)
                     )

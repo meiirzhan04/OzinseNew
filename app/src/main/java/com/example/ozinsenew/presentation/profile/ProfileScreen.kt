@@ -77,13 +77,13 @@ import com.example.ozinsenew.ui.theme.Grey400
 import com.example.ozinsenew.ui.theme.Red300
 import com.example.ozinsenew.ui.theme.Red400
 import com.example.ozinsenew.ui.theme.Typography
-import com.example.ozinsenew.viewmodels.ViewModel
+import com.example.ozinsenew.viewmodels.MainViewModel
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ProfileScreen(navController: NavController, viewModel: ViewModel) {
+fun ProfileScreen(navController: NavController, viewModel: MainViewModel) {
     val context = LocalContext.current
     val prefs = remember { context.getSharedPreferences("settings", Context.MODE_PRIVATE) }
     val languages = listOf("English", "Қазақша", "Русский")

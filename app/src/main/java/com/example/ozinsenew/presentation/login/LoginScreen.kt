@@ -12,7 +12,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
@@ -27,6 +29,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -34,10 +38,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Color.Companion.Gray
 import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
@@ -47,18 +51,39 @@ import com.example.ozinsenew.navigation.Screen
 import com.example.ozinsenew.navigation.route
 import com.example.ozinsenew.ui.theme.Grey400
 import com.example.ozinsenew.ui.theme.Typography
-import com.example.ozinsenew.viewmodels.ViewModel
+import com.example.ozinsenew.viewmodels.MainViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginScreen(
-    viewModel: ViewModel,
+    viewModel: MainViewModel,
     navController: NavController
 ) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var isSee by remember { mutableStateOf(false) }
-    val isClicked = remember { mutableStateOf(false) }
+    var isClicked by remember { mutableStateOf(false) }
+    var isLoading by remember { mutableStateOf(false) }
+
+    val isEmailError = isClicked && !isValidEmail(email)
+    val isFormIncomplete = email.isBlank() || password.isBlank()
+
+    val isAuth by viewModel.isAuthenticated.collectAsState()
+    val error by viewModel.errorMessage.collectAsState()
+
+    LaunchedEffect(isAuth) {
+        if (isAuth) {
+            isLoading = false
+            navController.navigate(Screen.HomeScreen.route())
+        } else if (isClicked && error.isNotBlank()) {
+            isLoading = false
+            Toast.makeText(
+                navController.context,
+                error,
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -66,7 +91,7 @@ fun LoginScreen(
                 title = {},
                 navigationIcon = {
                     IconButton(
-                        onClick = {},
+                        onClick = { navController.popBackStack() },
                         modifier = Modifier.padding(start = 12.dp)
                     ) {
                         Icon(
@@ -90,143 +115,134 @@ fun LoginScreen(
                 .padding(horizontal = 24.dp),
         ) {
             Text(
-                text = "Сәлем",
+                "Сәлем",
                 color = MaterialTheme.colorScheme.onPrimaryContainer,
                 style = Typography.headlineSmall,
                 fontWeight = FontWeight.Bold
             )
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(Modifier.height(16.dp))
             Text(
-                text = "Аккаунтқа кіріңіз",
+                "Аккаунтқа кіріңіз",
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
-                style = Typography.bodyLarge,
+                style = Typography.bodyLarge
             )
-            Spacer(modifier = Modifier.height(30.dp))
+            Spacer(Modifier.height(30.dp))
+
             TextFieldBox(
                 text = "Email",
                 email = email,
-                onValueChange = { newEmail ->
-                    email = newEmail
-                },
+                onValueChange = { email = it },
                 image = R.drawable.ic_message,
                 placeholder = "Сіздің email",
-                isTrue = false,
-                isError = isClicked.value && !isValidEmail(email) && email.isNotEmpty() && password.isNotEmpty(),
+                isError = isEmailError,
+                keyboardType = KeyboardType.Email,
                 onClick = {}
             )
-            Spacer(modifier = Modifier.height(16.dp))
-            if (isClicked.value && !isValidEmail(email) && email.isNotEmpty() && password.isNotEmpty()) {
-                Text(
-                    text = "Қате формат",
-                    color = Color(0xFF_FF402B),
-                    style = Typography.bodySmall,
-                )
-                Spacer(modifier = Modifier.height(16.dp))
+            if (isEmailError) {
+                Spacer(modifier = Modifier.height(8.dp))
+                Text("Қате формат", color = Color(0xFF_FF402B), style = Typography.bodySmall)
             }
+
+            Spacer(Modifier.height(16.dp))
+
             TextFieldBox(
                 text = "Құпия сөз",
                 email = password,
-                onValueChange = { newPassword ->
-                    password = newPassword
-                },
+                onValueChange = { password = it },
                 image = R.drawable.ic_passwrod,
                 placeholder = "Сіздің құпия сөзіңіз",
                 isTrue = true,
+                isError = false,
+                isSee = isSee,
+                onClick = { isSee = !isSee },
                 visualTransformation = if (isSee) VisualTransformation.None else PasswordVisualTransformation(),
-                onClick = {
-                    isSee = !isSee
-                }
+                keyboardType = KeyboardType.Password
             )
-            Spacer(modifier = Modifier.height(16.dp))
+
+            Spacer(Modifier.height(16.dp))
+
             TextButton(
                 onClick = {},
                 modifier = Modifier.align(Alignment.End),
                 enabled = false
             ) {
                 Text(
-                    text = "Құпия сөзді ұмыттыңыз ба?",
+                    "Құпия сөзді ұмыттыңыз ба?",
                     color = Color(0xFF_B376F7),
-                    style = Typography.bodySmall,
+                    style = Typography.bodySmall
                 )
             }
-            Spacer(modifier = Modifier.height(40.dp))
+
+            Spacer(Modifier.height(40.dp))
+
             Button(
                 onClick = {
-                    isClicked.value = true
-                    if (email.isEmpty() || password.isEmpty()) {
-                        Toast.makeText(navController.context, "Not Found", Toast.LENGTH_SHORT)
-                            .show()
+                    isClicked = true
+                    if (isFormIncomplete || isEmailError) {
+                        Toast.makeText(
+                            navController.context,
+                            "Email немесе құпия сөз дұрыс емес",
+                            Toast.LENGTH_SHORT
+                        ).show()
                         return@Button
-                    } else {
-                        viewModel.login(email, password)
-                        if (viewModel.isAuthenticated) {
-                            navController.navigate(Screen.HomeScreen.route())
-                        } else {
-                            Toast.makeText(
-                                navController.context,
-                                viewModel.errorMessage,
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        }
                     }
+                    isLoading = true
+                    viewModel.login(email, password)
                 },
                 shape = RoundedCornerShape(12.dp),
                 modifier = Modifier.fillMaxWidth(),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(0xFF_7E2DFC)
-                )
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF_7E2DFC))
             ) {
-                Text(
-                    text = "Кіру",
-                    color = White,
-                    style = Typography.bodyLarge,
-                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 16.dp)
-                )
+                if (isLoading) {
+                    androidx.compose.material3.CircularProgressIndicator(
+                        color = White,
+                        modifier = Modifier
+                            .padding(16.dp)
+                            .size(24.dp),
+                        strokeWidth = 2.dp
+                    )
+                } else {
+                    Text(
+                        "Кіру",
+                        color = White,
+                        style = Typography.bodyLarge,
+                        modifier = Modifier.padding(16.dp)
+                    )
+                }
             }
-            Spacer(modifier = Modifier.height(24.dp))
+
+            Spacer(Modifier.height(24.dp))
+
             TextButton(
-                onClick = {
-                    navController.navigate(Screen.RegisterScreen.route())
-                },
+                onClick = { navController.navigate(Screen.RegisterScreen.route()) },
                 modifier = Modifier.align(Alignment.CenterHorizontally)
             ) {
                 Row {
                     Text(
-                        text = "Аккаунтыныз жоқ па? ",
+                        "Аккаунтыныз жоқ па? ",
                         color = MaterialTheme.colorScheme.onSecondaryContainer,
-                        style = Typography.bodyMedium,
+                        style = Typography.bodyMedium
                     )
-                    Text(
-                        text = "Тіркелу",
-                        color = Color(0xFF_B376F7),
-                        style = Typography.bodySmall,
-                    )
+                    Text("Тіркелу", color = Color(0xFF_B376F7), style = Typography.bodySmall)
                 }
             }
-            Spacer(modifier = Modifier.height(40.dp))
+
+            Spacer(Modifier.height(40.dp))
             Text(
-                text = "Немесе",
+                "Немесе",
                 color = Grey400,
                 style = Typography.bodyMedium,
                 modifier = Modifier.align(Alignment.CenterHorizontally)
             )
-            Spacer(modifier = Modifier.height(16.dp))
-            ButtonBox(
-                image = R.drawable.ic_apple,
-                onClick = {},
-                text = "Apple ID",
-                containerColor = MaterialTheme.colorScheme.secondary
-            )
-            Spacer(modifier = Modifier.height(16.dp))
-            ButtonBox(
-                image = R.drawable.ic_google,
-                onClick = {},
-                text = "Google",
-                containerColor = MaterialTheme.colorScheme.secondary
-            )
+            Spacer(Modifier.height(16.dp))
+
+            ButtonBox(R.drawable.ic_apple, {}, "Apple ID", MaterialTheme.colorScheme.secondary)
+            Spacer(Modifier.height(16.dp))
+            ButtonBox(R.drawable.ic_google, {}, "Google", MaterialTheme.colorScheme.secondary)
         }
     }
 }
+
 
 @Composable
 fun TextFieldBox(
@@ -239,6 +255,7 @@ fun TextFieldBox(
     isError: Boolean = false,
     visualTransformation: VisualTransformation = VisualTransformation.None,
     isSee: Boolean = false,
+    keyboardType: KeyboardType = KeyboardType.Text,
     onClick: () -> Unit
 ) {
     Text(
@@ -260,6 +277,7 @@ fun TextFieldBox(
         shape = RoundedCornerShape(12.dp),
         modifier = Modifier.fillMaxWidth(),
         textStyle = Typography.bodyLarge,
+        keyboardOptions = KeyboardOptions.Default.copy(keyboardType = keyboardType),
         colors = androidx.compose.material.TextFieldDefaults.outlinedTextFieldColors(
             backgroundColor = MaterialTheme.colorScheme.background,
             focusedBorderColor = if (isError) Color(0xFF_FF402B) else Color(0xFF_B376F7),
@@ -267,24 +285,17 @@ fun TextFieldBox(
             textColor = MaterialTheme.colorScheme.onPrimaryContainer,
         ),
         leadingIcon = {
-            Image(
-                painter = painterResource(id = image),
-                contentDescription = "Email",
-            )
+            Image(painter = painterResource(id = image), contentDescription = null)
         },
         visualTransformation = visualTransformation,
         singleLine = true,
         trailingIcon = {
             if (isTrue) {
-                IconButton(
-                    onClick = onClick,
-                ) {
+                IconButton(onClick = onClick) {
                     Icon(
-                        painter = painterResource(
-                            id = if (!isSee) R.drawable.ic_eye_open else R.drawable.ic_eye_close
-                        ),
-                        contentDescription = "Email",
-                        tint = Grey400,
+                        painter = painterResource(id = if (!isSee) R.drawable.ic_eye_open else R.drawable.ic_eye_close),
+                        contentDescription = null,
+                        tint = Grey400
                     )
                 }
             }

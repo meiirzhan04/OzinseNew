@@ -24,13 +24,13 @@ import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.ripple
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -52,12 +52,12 @@ import androidx.navigation.NavHostController
 import com.example.ozinsenew.R
 import com.example.ozinsenew.ui.theme.Red400
 import com.example.ozinsenew.ui.theme.Typography
-import com.example.ozinsenew.viewmodels.ViewModel
+import com.example.ozinsenew.viewmodels.MainViewModel
 import com.google.firebase.auth.FirebaseAuth
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EditProfile(navController: NavHostController, viewModel: ViewModel) {
+fun EditProfile(navController: NavHostController, viewModel: MainViewModel) {
     val context = LocalContext.current
     val sharedPreferences = context.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
 
@@ -70,11 +70,10 @@ fun EditProfile(navController: NavHostController, viewModel: ViewModel) {
 
     Scaffold(
         topBar = {
-            TopAppBar(
+            CenterAlignedTopAppBar(
                 title = {
                     Text(
                         text = "Жеке деректер",
-                        modifier = Modifier.fillMaxWidth(),
                         textAlign = TextAlign.Center,
                         style = Typography.bodyLarge,
                         color = MaterialTheme.colorScheme.onPrimaryContainer

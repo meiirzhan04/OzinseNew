@@ -1,6 +1,7 @@
 package com.example.ozinsenew.navigation
 
 import android.annotation.SuppressLint
+import android.app.Application
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
@@ -22,7 +23,11 @@ import com.example.ozinsenew.presentation.profile.ProfileScreen
 import com.example.ozinsenew.presentation.profile.ResetPasswordScreen
 import com.example.ozinsenew.presentation.start.OnboardingScreen
 import com.example.ozinsenew.presentation.start.SplashScreen
+import com.example.ozinsenew.presentation.video.CustomVideoPlayerScreen
 import com.example.ozinsenew.viewmodels.ListViewModel
+import com.example.ozinsenew.viewmodels.MainViewModel
+import com.example.ozinsenew.viewmodels.ViewModelFactory
+import com.google.firebase.auth.FirebaseAuth
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
@@ -31,7 +36,11 @@ fun NavGraph(
     listViewModel: ListViewModel,
     paddingValues: PaddingValues
 ) {
-    val context = LocalContext.current
+    val context = LocalContext.current.applicationContext as Application
+    val firebaseAuth = FirebaseAuth.getInstance()
+    val viewModel: MainViewModel = viewModel(
+        factory = ViewModelFactory(context, firebaseAuth)
+    )
     val onBoardingPreferences = OnboardingPreferences(context)
 
 
@@ -54,14 +63,14 @@ fun NavGraph(
 
         composable(Screen.LoginScreen.route()) {
             LoginScreen(
-                viewModel = viewModel(),
+                viewModel = viewModel,
                 navController = navController
             )
         }
 
         composable(Screen.RegisterScreen.route()) {
             RegisterScreen(
-                viewModel = viewModel(),
+                viewModel = viewModel,
                 navController = navController
             )
         }
@@ -69,7 +78,7 @@ fun NavGraph(
         composable(Screen.HomeScreen.route()) {
             HomeScreen(
                 navController = navController,
-                viewModel = viewModel()
+                viewModel = viewModel
             )
         }
 
@@ -82,7 +91,7 @@ fun NavGraph(
                     navController = navController,
                     itemId = boxId,
                     listViewModel = listViewModel,
-                    viewModel = viewModel(),
+                    viewModel = viewModel,
                     paddingValues = paddingValues
                 )
             }
@@ -102,7 +111,7 @@ fun NavGraph(
                 ),
                 selectedCategory = null,
                 onCategorySelected = {},
-                viewModel = viewModel()
+                viewModel = viewModel
             )
         }
 
@@ -121,16 +130,27 @@ fun NavGraph(
         composable(Screen.ProfileScreen.route()) {
             ProfileScreen(
                 navController = navController,
-                viewModel = viewModel()
+                viewModel = viewModel
             )
         }
 
         composable(Screen.EditProfile.route()) {
-            EditProfile(navController = navController, viewModel())
+            EditProfile(navController = navController, viewModel)
         }
 
         composable(Screen.ResetPasswordScreen.route()) {
             ResetPasswordScreen(navController = navController)
         }
+
+        composable(
+            route = "video_player?uri={uri}",
+            arguments = listOf(
+                navArgument("uri") { type = NavType.StringType }
+            )
+        ) { backStackEntry ->
+            val uri = backStackEntry.arguments?.getString("uri") ?: return@composable
+            CustomVideoPlayerScreen(navController = navController, videoUri = uri)
+        }
+
     }
 }

@@ -38,6 +38,15 @@ sealed interface Screen {
 
     @Serializable
     object ResetPasswordScreen : Screen
+
+    @Serializable
+    data class CustomVideoPlayer(val videoUri: String) : Screen {
+        fun route() = "video_player/$videoUri"
+        companion object {
+            fun createRoute(videoUri: String): String = "video_player/$videoUri"
+        }
+    }
+
 }
 
 fun Screen.route(): String = when (this) {
@@ -52,6 +61,7 @@ fun Screen.route(): String = when (this) {
     Screen.ProfileScreen -> "profile"
     Screen.EditProfile -> "edit_profile"
     Screen.ResetPasswordScreen -> "reset_password"
+    is Screen.CustomVideoPlayer -> "video_player/$videoUri"
 }
 
 fun Screen.baseRoute(): String = when (this) {
@@ -66,4 +76,5 @@ fun Screen.baseRoute(): String = when (this) {
     Screen.ProfileScreen -> "profile"
     Screen.EditProfile -> "edit_profile"
     Screen.ResetPasswordScreen -> "reset_password"
+    is Screen.CustomVideoPlayer -> "video_player/$videoUri"
 }

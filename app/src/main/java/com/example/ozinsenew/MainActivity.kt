@@ -10,7 +10,6 @@ import com.example.ozinsenew.data.theme.ThemeViewModel
 import com.example.ozinsenew.navigation.MainScreen
 import com.example.ozinsenew.ui.theme.OzinseNewTheme
 import com.example.ozinsenew.viewmodels.ListViewModel
-import com.example.ozinsenew.viewmodels.ViewModel
 import com.google.firebase.FirebaseApp
 
 class MainActivity : ComponentActivity() {
@@ -30,3 +29,4 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
+

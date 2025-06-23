@@ -54,7 +54,7 @@ import com.example.ozinsenew.navigation.Screen
 import com.example.ozinsenew.navigation.route
 import com.example.ozinsenew.ui.theme.Grey400
 import com.example.ozinsenew.ui.theme.Typography
-import com.example.ozinsenew.viewmodels.ViewModel
+import com.example.ozinsenew.viewmodels.MainViewModel
 import com.google.accompanist.flowlayout.FlowRow
 import kotlinx.coroutines.delay
 
@@ -65,7 +65,7 @@ fun SearchScreen(
     categories: List<String>,
     selectedCategory: String?,
     onCategorySelected: (String) -> Unit,
-    viewModel: ViewModel
+    viewModel: MainViewModel
 ) {
     var search by remember { mutableStateOf("") }
     val allItems by remember { mutableStateOf(viewModel.allBoxData()) }
@@ -84,7 +84,6 @@ fun SearchScreen(
                 title = {
                     Text(
                         text = "Іздеу",
-                        modifier = Modifier.fillMaxWidth(),
                         fontWeight = FontWeight.Bold,
                         textAlign = TextAlign.Center,
                         style = Typography.bodyLarge,
@@ -112,6 +111,7 @@ fun SearchScreen(
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.background)
                 .padding(paddingValues)
+                .padding(bottom = 65.dp)
         ) {
             HorizontalDivider(
                 color = MaterialTheme.colorScheme.primaryContainer,
@@ -205,7 +205,9 @@ fun SearchScreen(
                             }
                         )
                         Spacer(modifier = Modifier.height(24.dp))
-                        HorizontalDivider(color = MaterialTheme.colorScheme.primaryContainer)
+                        if (filteredList.last() != item) {
+                            HorizontalDivider(color = MaterialTheme.colorScheme.primaryContainer)
+                        }
                     }
                 } else {
                     item {

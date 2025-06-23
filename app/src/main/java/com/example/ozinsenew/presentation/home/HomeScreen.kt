@@ -7,8 +7,10 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -27,6 +29,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -37,6 +41,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
@@ -44,15 +49,14 @@ import com.example.ozinsenew.R
 import com.example.ozinsenew.data.home.BoxData
 import com.example.ozinsenew.navigation.Screen
 import com.example.ozinsenew.navigation.route
-import com.example.ozinsenew.ui.theme.Grey100
 import com.example.ozinsenew.ui.theme.Grey400
 import com.example.ozinsenew.ui.theme.Red500
 import com.example.ozinsenew.ui.theme.Typography
-import com.example.ozinsenew.viewmodels.ViewModel
+import com.example.ozinsenew.viewmodels.MainViewModel
 
 @SuppressLint("UnrememberedMutableInteractionSource")
 @Composable
-fun HomeScreen(navController: NavHostController, viewModel: ViewModel) {
+fun HomeScreen(navController: NavHostController, viewModel: MainViewModel) {
     val headBoxData = viewModel.headBoxData
     val middleBoxData = viewModel.middleBoxData
     val boxData = viewModel.boxData
@@ -87,21 +91,22 @@ fun HomeScreen(navController: NavHostController, viewModel: ViewModel) {
                     }
                 }
                 Spacer(modifier = Modifier.height(32.dp))
-                LazyRow {
-                    items(headBoxData) {
-                        Spacer(modifier = Modifier.width(24.dp))
+                LazyRow(
+                    contentPadding = PaddingValues(start = 24.dp, end = 12.dp),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    items(headBoxData, key = { it.id }) { item ->
                         BoxCard(
-                            item = it,
+                            item = item,
                             onClick = {
-                                navController.navigate(
-                                    Screen.DetailScreen(boxId = it.id).route()
-                                )
+                                navController.navigate(Screen.DetailScreen(boxId = item.id).route())
                             },
-                            size = androidx.compose.ui.unit.DpSize(340.dp, 200.dp),
+                            size = DpSize(340.dp, 200.dp),
                             showTag = true
                         )
                     }
                 }
+
                 Spacer(modifier = Modifier.height(32.dp))
                 Text(
                     text = "Қарауды жалғастырыңыз",
@@ -111,17 +116,17 @@ fun HomeScreen(navController: NavHostController, viewModel: ViewModel) {
                     modifier = Modifier.padding(start = 24.dp),
                 )
                 Spacer(modifier = Modifier.height(16.dp))
-                LazyRow {
-                    items(middleBoxData) {
-                        Spacer(modifier = Modifier.width(24.dp))
+                LazyRow(
+                    contentPadding = PaddingValues(start = 24.dp, end = 12.dp),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    items(middleBoxData, key = { it.id }) { item ->
                         BoxCard(
-                            item = it,
+                            item = item,
                             onClick = {
-                                navController.navigate(
-                                    Screen.DetailScreen(boxId = it.id).route()
-                                )
+                                navController.navigate(Screen.DetailScreen(boxId = item.id).route())
                             },
-                            size = androidx.compose.ui.unit.DpSize(230.dp, 150.dp),
+                            size = DpSize(230.dp, 150.dp)
                         )
                     }
                 }
@@ -130,8 +135,8 @@ fun HomeScreen(navController: NavHostController, viewModel: ViewModel) {
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 24.dp),
-                    verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
-                    horizontalArrangement = androidx.compose.foundation.layout.Arrangement.SpaceBetween
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Text(
                         text = "Трендтегілер",
@@ -151,9 +156,11 @@ fun HomeScreen(navController: NavHostController, viewModel: ViewModel) {
                     }
                 }
                 Spacer(modifier = Modifier.height(16.dp))
-                LazyRow {
+                LazyRow(
+                    contentPadding = PaddingValues(start = 24.dp, end = 12.dp),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
                     items(boxData) {
-                        Spacer(modifier = Modifier.width(24.dp))
                         BoxCard(
                             item = it,
                             onClick = {
@@ -161,7 +168,7 @@ fun HomeScreen(navController: NavHostController, viewModel: ViewModel) {
                                     Screen.DetailScreen(boxId = it.id).route()
                                 )
                             },
-                            size = androidx.compose.ui.unit.DpSize(120.dp, 180.dp)
+                            size = DpSize(120.dp, 180.dp)
                         )
                     }
                 }
@@ -171,14 +178,15 @@ fun HomeScreen(navController: NavHostController, viewModel: ViewModel) {
     }
 }
 
-@SuppressLint("UnrememberedMutableInteractionSource")
 @Composable
 fun BoxCard(
     item: BoxData,
-    size: androidx.compose.ui.unit.DpSize,
+    size: DpSize,
     showTag: Boolean = false,
     onClick: () -> Unit
 ) {
+    val interactionSource = remember { MutableInteractionSource() }
+
     Column(modifier = Modifier.width(size.width)) {
         Box(
             modifier = Modifier
@@ -187,15 +195,16 @@ fun BoxCard(
                 .clickable(
                     onClick = onClick,
                     indication = ripple(bounded = false),
-                    interactionSource = MutableInteractionSource()
+                    interactionSource = interactionSource
                 )
         ) {
             Image(
-                painterResource(item.image),
+                painter = painterResource(id = item.image),
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier.size(size)
             )
+
             if (showTag) {
                 Box(
                     modifier = Modifier
@@ -213,14 +222,18 @@ fun BoxCard(
                 }
             }
         }
+
         Spacer(modifier = Modifier.height(16.dp))
+
         Text(
             text = item.title,
             style = Typography.bodyMedium,
             color = MaterialTheme.colorScheme.onPrimaryContainer,
             fontWeight = FontWeight.Bold
         )
+
         Spacer(modifier = Modifier.height(8.dp))
+
         Text(
             text = item.description,
             style = Typography.bodySmall,
@@ -230,6 +243,5 @@ fun BoxCard(
         )
     }
 }
-
 
 
