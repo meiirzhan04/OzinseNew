@@ -11,9 +11,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.ozinsenew.R
-import com.example.ozinsenew.navigation.Screen
-import com.example.ozinsenew.navigation.route
-import com.example.ozinsenew.ui.theme.Red300
+import com.example.ozinsenew.presentation.navigation.Screen
+import com.example.ozinsenew.presentation.navigation.route
+import com.example.ozinsenew.presentation.ui.theme.Red300
 
 
 @Composable
