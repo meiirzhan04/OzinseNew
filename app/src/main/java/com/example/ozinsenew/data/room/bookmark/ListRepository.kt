@@ -8,6 +8,7 @@ data class AuthResult(
     val message: String = ""
 )
 
+@Suppress("DEPRECATION")
 class ListRepository(
     private val firebaseAuth: FirebaseAuth,
     private val listItemsDao: ListItemsDao
@@ -53,11 +54,4 @@ class ListRepository(
 
     val readAllData = listItemsDao.getAllItems()
 
-    suspend fun insert(item: ListItems) {
-        listItemsDao.insert(item)
-    }
-
-    suspend fun delete(item: ListItems) {
-        listItemsDao.delete(item)
-    }
 }

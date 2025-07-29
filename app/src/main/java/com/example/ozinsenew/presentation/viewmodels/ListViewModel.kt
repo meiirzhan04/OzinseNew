@@ -28,9 +28,6 @@ class ListViewModel(application: Application) : AndroidViewModel(application) {
             emptyList()
         )
 
-    private val categoryCache = mutableMapOf<String, StateFlow<List<ListItems>>>()
-
-
     fun insert(item: ListItems) {
         viewModelScope.launch(Dispatchers.IO) {
             listItemsDao.insert(item)

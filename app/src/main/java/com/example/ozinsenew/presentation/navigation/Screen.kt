@@ -42,9 +42,6 @@ sealed interface Screen {
     @Serializable
     data class CustomVideoPlayer(val videoUri: String) : Screen {
         fun route() = "video_player/$videoUri"
-        companion object {
-            fun createRoute(videoUri: String): String = "video_player/$videoUri"
-        }
     }
 
 }

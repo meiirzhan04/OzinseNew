@@ -4,9 +4,9 @@ import android.app.Application
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.ozinsenew.R
-import com.example.ozinsenew.domain.model.home.BoxData
 import com.example.ozinsenew.data.room.bookmark.ListItemsDatabase
 import com.example.ozinsenew.data.room.bookmark.ListRepository
+import com.example.ozinsenew.domain.model.home.BoxData
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -14,7 +14,8 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 class MainViewModel(
-    application: Application, private val firebaseAuth: FirebaseAuth
+    application: Application,
+    firebaseAuth: FirebaseAuth
 ) : ViewModel() {
 
     private val repository: ListRepository

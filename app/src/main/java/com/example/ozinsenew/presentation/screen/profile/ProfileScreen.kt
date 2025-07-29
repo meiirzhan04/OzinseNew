@@ -147,75 +147,6 @@ fun ProfileScreen(navController: NavController, viewModel: MainViewModel) {
             }
         }
     }
-    /*if (showLogOutSheet) {
-        ModalBottomSheet(
-            onDismissRequest = { showLogOutSheet = false },
-            shape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp),
-            containerColor = Color(0xFF1C2431),
-            sheetState = sheetState,
-            scrimColor = Color.Black.copy(alpha = 0.5f),
-            dragHandle = { CustomDragHandle() }
-        ) {
-            LazyColumn(modifier = Modifier.padding(20.dp)) {
-                item {
-                    Column {
-                        Text(
-                            text = "Шығу",
-                            color = Color.White,
-                            fontSize = 24.sp,
-                            fontWeight = FontWeight.Bold
-                        )
-                        Spacer(modifier = Modifier.height(8.dp))
-                        Text(
-                            text = "Сіз шынымен аккаунтыныздан",
-                            style = Typography.titleLarge,
-                            color = Gray
-                        )
-                        Spacer(Modifier.height(32.dp))
-                        Button(
-                            modifier = Modifier.fillMaxWidth(),
-                            onClick = {
-                                showLogOutSheet = false
-                            },
-                            shape = RoundedCornerShape(12.dp),
-                            colors = ButtonDefaults.buttonColors(
-                                backgroundColor = if (isClickedYes) Pink else BoxGray.copy(),
-                            ),
-                        ) {
-                            Text(
-                                text = "Иә, шығу",
-                                fontSize = 16.sp,
-                                fontWeight = FontWeight.W600,
-                                modifier = Modifier.padding(16.dp),
-                                color = if (isClickedYes) White else TextPink
-                            )
-                        }
-                        Spacer(modifier = Modifier.height(8.dp))
-                        Button(
-                            onClick = {
-                                isClickedYes = !isClickedYes
-                                isClickedNo = true
-                            },
-                            shape = RoundedCornerShape(12.dp),
-                            modifier = Modifier.fillMaxWidth(),
-                            colors = ButtonDefaults.buttonColors(
-                                backgroundColor = if (isClickedNo) Pink else BoxGray,
-
-                                )
-                        ) {
-                            Text(
-                                text = "Жоқ",
-                                fontSize = 16.sp,
-                                fontWeight = FontWeight.W600,
-                                modifier = Modifier.padding(16.dp),
-                                color = if (isClickedNo) White else TextPink
-                            )
-                        }
-                    }
-                }
-            }
-        }
-    }*/
     if (showSheet) {
         LogoutBottomSheet(
             onLogout = {
@@ -347,7 +278,7 @@ fun ProfileHeader(name: String, email: String) {
                 modifier = Modifier.size(140.dp)
             )
             Text(
-                text = if (name.isEmpty()) "Менің профилім" else name,
+                text = name.ifEmpty { "Менің профилім" },
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onPrimaryContainer,
