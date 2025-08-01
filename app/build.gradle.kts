@@ -9,18 +9,18 @@ plugins {
     id("kotlin-kapt")
     id("kotlin-android")
     kotlin("kapt")
-    alias(libs.plugins.google.gms.google.services)/*
-    id("com.google.gms.google-services")*/
+    alias(libs.plugins.google.gms.google.services)
+    id("com.google.dagger.hilt.android")
 }
 
 android {
     namespace = "com.example.ozinsenew"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.example.ozinsenew"
         minSdk = 24
-        targetSdk = 35
+        targetSdk = 36
         versionCode = 1
         versionName = "1.0"
 
@@ -49,6 +49,10 @@ android {
 }
 
 dependencies {
+    implementation ("com.google.dagger:hilt-android:2.51.1") // Replace VERSION
+    kapt("com.google.dagger:hilt-compiler:2.51.1")
+    implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
+
     implementation ("androidx.media3:media3-exoplayer:1.7.1")
     implementation ("androidx.media3:media3-ui:1.7.1")
 

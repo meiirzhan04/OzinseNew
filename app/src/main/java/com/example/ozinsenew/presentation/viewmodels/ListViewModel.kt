@@ -2,24 +2,24 @@ package com.example.ozinsenew.presentation.viewmodels
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.ozinsenew.data.room.bookmark.ListItems
 import com.example.ozinsenew.data.room.bookmark.ListItemsDatabase
 import com.example.ozinsenew.data.room.bookmark.ListRepository
 import com.google.firebase.auth.FirebaseAuth
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class ListViewModel(application: Application) : AndroidViewModel(application) {
-    private val listItemsDao = ListItemsDatabase.getDatabase(application).listItemsDao()
-    private val firebaseAuth = FirebaseAuth.getInstance()
-    private val repository = ListRepository(
-        firebaseAuth = firebaseAuth,
-        listItemsDao = listItemsDao
-    )
+@HiltViewModel
+class ListViewModel @Inject constructor(
+    private val repository: ListRepository
+) : ViewModel() {
 
     val allItems: StateFlow<List<ListItems>> = repository.readAllData
         .stateIn(
@@ -30,17 +30,17 @@ class ListViewModel(application: Application) : AndroidViewModel(application) {
 
     fun insert(item: ListItems) {
         viewModelScope.launch(Dispatchers.IO) {
-            listItemsDao.insert(item)
+            repository.insert(item)
         }
     }
 
     suspend fun isBookmarked(item: ListItems): Boolean {
-        return listItemsDao.isBookmarked(item.name, item.data, item.image, item.category)
+        return repository.isBookmarked(item)
     }
 
     fun delete(item: ListItems) {
         viewModelScope.launch(Dispatchers.IO) {
-            listItemsDao.deleteByFields(item.name, item.data, item.image, item.category)
+            repository.deleteByFields(item)
         }
     }
 }

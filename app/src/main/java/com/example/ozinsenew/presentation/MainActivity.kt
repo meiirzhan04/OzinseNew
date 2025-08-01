@@ -11,7 +11,9 @@ import com.example.ozinsenew.presentation.navigation.MainScreen
 import com.example.ozinsenew.presentation.ui.theme.OzinseNewTheme
 import com.example.ozinsenew.presentation.viewmodels.ListViewModel
 import com.google.firebase.FirebaseApp
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

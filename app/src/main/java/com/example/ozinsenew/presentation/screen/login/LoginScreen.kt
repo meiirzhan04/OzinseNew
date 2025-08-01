@@ -18,8 +18,6 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.TopAppBar
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -47,43 +45,43 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.ozinsenew.R
 import com.example.ozinsenew.presentation.navigation.Screen
 import com.example.ozinsenew.presentation.navigation.route
 import com.example.ozinsenew.presentation.ui.theme.Grey400
 import com.example.ozinsenew.presentation.ui.theme.Typography
-import com.example.ozinsenew.presentation.viewmodels.MainViewModel
+import com.example.ozinsenew.presentation.viewmodels.AuthViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginScreen(
-    viewModel: MainViewModel,
+    viewModel: AuthViewModel = hiltViewModel(),
     navController: NavController
 ) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
-    var isSee by remember { mutableStateOf(false) }
+    var isPasswordVisible by remember { mutableStateOf(false) }
     var isClicked by remember { mutableStateOf(false) }
-    var isLoading by remember { mutableStateOf(false) }
 
+    val state by viewModel.state.collectAsState()
     val isEmailError = isClicked && !isValidEmail(email)
     val isFormIncomplete = email.isBlank() || password.isBlank()
 
-    val isAuth by viewModel.isAuthenticated.collectAsState()
-    val error by viewModel.errorMessage.collectAsState()
+    LaunchedEffect(state.isUserLoggedIn) {
+        if (state.isUserLoggedIn) {
+            navController.navigate(Screen.HomeScreen.route()) {
+                popUpTo(Screen.LoginScreen.route()) { inclusive = true }
+            }
+        }
+    }
 
-    LaunchedEffect(isAuth) {
-        if (isAuth) {
-            isLoading = false
-            navController.navigate(Screen.HomeScreen.route())
-        } else if (isClicked && error.isNotBlank()) {
-            isLoading = false
-            Toast.makeText(
-                navController.context,
-                error,
-                Toast.LENGTH_SHORT
-            ).show()
+    LaunchedEffect(state.errorMessage) {
+        state.errorMessage?.let {
+            if (it.isNotBlank()) {
+                Toast.makeText(navController.context, it, Toast.LENGTH_SHORT).show()
+            }
         }
     }
 
@@ -91,21 +89,9 @@ fun LoginScreen(
         topBar = {
             TopAppBar(
                 title = {},
-                navigationIcon = {
-                    IconButton(
-                        onClick = { navController.popBackStack() },
-                        modifier = Modifier.padding(start = 12.dp)
-                    ) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
-                            contentDescription = "Back",
-                            tint = MaterialTheme.colorScheme.onPrimaryContainer,
-                        )
-                    }
-                },
+                navigationIcon = {},
                 backgroundColor = MaterialTheme.colorScheme.background,
-                elevation = 0.dp,
-                modifier = Modifier.padding(top = 32.dp)
+                elevation = 0.dp
             )
         }
     ) { innerPadding ->
@@ -114,13 +100,11 @@ fun LoginScreen(
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.background)
                 .padding(innerPadding)
-                .padding(horizontal = 24.dp),
+                .padding(horizontal = 24.dp)
         ) {
             Text(
-                "Сәлем",
-                color = MaterialTheme.colorScheme.onPrimaryContainer,
-                style = Typography.headlineSmall,
-                fontWeight = FontWeight.Bold
+                "Сәлем", color = MaterialTheme.colorScheme.onPrimaryContainer,
+                style = Typography.headlineSmall, fontWeight = FontWeight.Bold
             )
             Spacer(Modifier.height(16.dp))
             Text(
@@ -142,7 +126,7 @@ fun LoginScreen(
             )
             if (isEmailError) {
                 Spacer(modifier = Modifier.height(8.dp))
-                Text("Қате формат", color = Color(0xFF_FF402B), style = Typography.bodySmall)
+                Text("Қате формат", color = Color(0xFFFF402B), style = Typography.bodySmall)
             }
 
             Spacer(Modifier.height(16.dp))
@@ -154,10 +138,10 @@ fun LoginScreen(
                 image = R.drawable.ic_passwrod,
                 placeholder = "Сіздің құпия сөзіңіз",
                 isTrue = true,
-                isError = false,
-                isSee = isSee,
-                onClick = { isSee = !isSee },
-                visualTransformation = if (isSee) VisualTransformation.None else PasswordVisualTransformation(),
+                isSee = isPasswordVisible,
+                onClick = { isPasswordVisible = !isPasswordVisible },
+                visualTransformation = if (isPasswordVisible) VisualTransformation.None
+                else PasswordVisualTransformation(),
                 keyboardType = KeyboardType.Password
             )
 
@@ -169,8 +153,7 @@ fun LoginScreen(
                 enabled = false
             ) {
                 Text(
-                    "Құпия сөзді ұмыттыңыз ба?",
-                    color = Color(0xFF_B376F7),
+                    "Құпия сөзді ұмыттыңыз ба?", color = Color(0xFFB376F7),
                     style = Typography.bodySmall
                 )
             }
@@ -188,14 +171,13 @@ fun LoginScreen(
                         ).show()
                         return@Button
                     }
-                    isLoading = true
                     viewModel.login(email, password)
                 },
                 shape = RoundedCornerShape(12.dp),
                 modifier = Modifier.fillMaxWidth(),
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF_7E2DFC))
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF7E2DFC))
             ) {
-                if (isLoading) {
+                if (state.isLoading) {
                     CircularProgressIndicator(
                         color = White,
                         modifier = Modifier
@@ -205,8 +187,7 @@ fun LoginScreen(
                     )
                 } else {
                     Text(
-                        "Кіру",
-                        color = White,
+                        "Кіру", color = White,
                         style = Typography.bodyLarge,
                         modifier = Modifier.padding(16.dp)
                     )
@@ -225,14 +206,13 @@ fun LoginScreen(
                         color = MaterialTheme.colorScheme.onSecondaryContainer,
                         style = Typography.bodyMedium
                     )
-                    Text("Тіркелу", color = Color(0xFF_B376F7), style = Typography.bodySmall)
+                    Text("Тіркелу", color = Color(0xFFB376F7), style = Typography.bodySmall)
                 }
             }
 
             Spacer(Modifier.height(40.dp))
             Text(
-                "Немесе",
-                color = Grey400,
+                "Немесе", color = Grey400,
                 style = Typography.bodyMedium,
                 modifier = Modifier.align(Alignment.CenterHorizontally)
             )

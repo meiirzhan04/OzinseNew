@@ -44,6 +44,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.ozinsenew.R
 import com.example.ozinsenew.domain.model.home.BoxData
@@ -52,14 +53,15 @@ import com.example.ozinsenew.presentation.navigation.route
 import com.example.ozinsenew.presentation.ui.theme.Grey400
 import com.example.ozinsenew.presentation.ui.theme.Red500
 import com.example.ozinsenew.presentation.ui.theme.Typography
-import com.example.ozinsenew.presentation.viewmodels.MainViewModel
+import com.example.ozinsenew.presentation.viewmodels.HomeViewModel
 
-@SuppressLint("UnrememberedMutableInteractionSource")
+@SuppressLint("UnrememberedMutableInteractionSource", "StateFlowValueCalledInComposition")
 @Composable
-fun HomeScreen(navController: NavHostController, viewModel: MainViewModel) {
-    val headBoxData = viewModel.headBoxData
-    val middleBoxData = viewModel.middleBoxData
-    val boxData = viewModel.boxData
+fun HomeScreen(navController: NavHostController, viewModel: HomeViewModel = hiltViewModel()) {
+    val state = viewModel.state.value
+    val headBoxData = state.headBoxData
+    val middleBoxData = state.middleBoxData
+    val boxData = state.boxData
 
     Scaffold { innerPadding ->
         LazyColumn(

@@ -65,6 +65,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.edit
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.ozinsenew.R
@@ -77,13 +78,13 @@ import com.example.ozinsenew.presentation.ui.theme.Grey400
 import com.example.ozinsenew.presentation.ui.theme.Red300
 import com.example.ozinsenew.presentation.ui.theme.Red400
 import com.example.ozinsenew.presentation.ui.theme.Typography
-import com.example.ozinsenew.presentation.viewmodels.MainViewModel
+import com.example.ozinsenew.presentation.viewmodels.AuthViewModel
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ProfileScreen(navController: NavController, viewModel: MainViewModel) {
+fun ProfileScreen(navController: NavController, authViewModel: AuthViewModel = hiltViewModel()) {
     val context = LocalContext.current
     val prefs = remember { context.getSharedPreferences("settings", Context.MODE_PRIVATE) }
     val languages = listOf("English", "Қазақша", "Русский")
@@ -102,7 +103,6 @@ fun ProfileScreen(navController: NavController, viewModel: MainViewModel) {
     val scope = rememberCoroutineScope()
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     var showSheet by remember { mutableStateOf(false) }
-
 
     if (showChangeLanguageSheet) {
         ModalBottomSheet(
@@ -156,8 +156,9 @@ fun ProfileScreen(navController: NavController, viewModel: MainViewModel) {
                     showSheet = false
                     FirebaseAuth.getInstance().signOut()
                 }
-                viewModel.logout()
+                authViewModel.logout()
                 navController.navigate(Screen.LoginScreen.route())
+
             },
             onCancel = {
                 scope.launch {

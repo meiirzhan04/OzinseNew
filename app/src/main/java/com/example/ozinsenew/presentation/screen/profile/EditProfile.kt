@@ -48,16 +48,20 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.edit
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.ozinsenew.R
 import com.example.ozinsenew.presentation.ui.theme.Red400
 import com.example.ozinsenew.presentation.ui.theme.Typography
-import com.example.ozinsenew.presentation.viewmodels.MainViewModel
+import com.example.ozinsenew.presentation.viewmodels.ProfileViewModel
 import com.google.firebase.auth.FirebaseAuth
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EditProfile(navController: NavHostController, viewModel: MainViewModel) {
+fun EditProfile(
+    navController: NavHostController,
+    profileViewModel: ProfileViewModel = hiltViewModel()
+) {
     val context = LocalContext.current
     val sharedPreferences = context.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
 
@@ -149,8 +153,8 @@ fun EditProfile(navController: NavHostController, viewModel: MainViewModel) {
             Spacer(modifier = Modifier.weight(1f))
             Button(
                 onClick = {
-                    viewModel.updateFirebaseEmail(email) { success, message ->
-                        if (!success) {
+                    profileViewModel.updateFirebaseEmail(email) { success, message ->
+                        if (success) {
                             Toast.makeText(context, "Email сәтті өзгертілді", Toast.LENGTH_SHORT)
                                 .show()
                             navController.popBackStack()
@@ -158,6 +162,7 @@ fun EditProfile(navController: NavHostController, viewModel: MainViewModel) {
                             Toast.makeText(context, "Қате: $message", Toast.LENGTH_LONG).show()
                         }
                     }
+
                 },
                 modifier = Modifier
                     .fillMaxWidth()

@@ -3,6 +3,7 @@ package com.example.ozinsenew.presentation.screen.home
 //noinspection UsingMaterialAndMaterial3Libraries
 //noinspection UsingMaterialAndMaterial3Libraries
 //noinspection UsingMaterialAndMaterial3Libraries
+import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -34,6 +35,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -48,16 +50,18 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.ozinsenew.R
 import com.example.ozinsenew.presentation.navigation.Screen
 import com.example.ozinsenew.presentation.navigation.route
 import com.example.ozinsenew.presentation.ui.theme.Grey400
 import com.example.ozinsenew.presentation.ui.theme.Typography
-import com.example.ozinsenew.presentation.viewmodels.MainViewModel
+import com.example.ozinsenew.presentation.viewmodels.HomeViewModel
 import com.google.accompanist.flowlayout.FlowRow
 import kotlinx.coroutines.delay
 
+@SuppressLint("StateFlowValueCalledInComposition")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchScreen(
@@ -65,17 +69,21 @@ fun SearchScreen(
     categories: List<String>,
     selectedCategory: String?,
     onCategorySelected: (String) -> Unit,
-    viewModel: MainViewModel
+    viewModel: HomeViewModel = hiltViewModel()
 ) {
+
+    val state = viewModel.state.value
     var search by remember { mutableStateOf("") }
-    val allItems by remember { mutableStateOf(viewModel.allBoxData()) }
-    val filteredList by remember(search) {
-        mutableStateOf(
+
+    val allItems = state.allBoxData()
+
+    val filteredList by remember(search, allItems) {
+        derivedStateOf {
             allItems.filter {
                 it.title.contains(search, ignoreCase = true) ||
                         it.description.contains(search, ignoreCase = true)
             }
-        )
+        }
     }
 
     Scaffold(

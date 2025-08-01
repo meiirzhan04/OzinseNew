@@ -2,17 +2,25 @@ package com.example.ozinsenew.data.room.bookmark
 
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.tasks.await
+import javax.inject.Inject
 
 data class AuthResult(
     val successful: Boolean,
     val message: String = ""
 )
 
-@Suppress("DEPRECATION")
-class ListRepository(
+class ListRepository @Inject constructor(
     private val firebaseAuth: FirebaseAuth,
     private val listItemsDao: ListItemsDao
 ) {
+
+    suspend fun insert(item: ListItems) = listItemsDao.insert(item)
+
+    suspend fun isBookmarked(item: ListItems): Boolean =
+        listItemsDao.isBookmarked(item.name, item.data, item.image, item.category)
+
+    suspend fun deleteByFields(item: ListItems) =
+        listItemsDao.deleteByFields(item.name, item.data, item.image, item.category)
 
     suspend fun register(email: String, password: String): AuthResult {
         return try {

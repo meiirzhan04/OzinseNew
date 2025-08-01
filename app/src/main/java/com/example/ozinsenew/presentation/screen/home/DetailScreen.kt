@@ -45,6 +45,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.ozinsenew.R
 import com.example.ozinsenew.data.room.bookmark.ListItems
@@ -53,8 +54,8 @@ import com.example.ozinsenew.presentation.ui.theme.Grey400
 import com.example.ozinsenew.presentation.ui.theme.Grey600
 import com.example.ozinsenew.presentation.ui.theme.Red300
 import com.example.ozinsenew.presentation.ui.theme.Typography
+import com.example.ozinsenew.presentation.viewmodels.HomeViewModel
 import com.example.ozinsenew.presentation.viewmodels.ListViewModel
-import com.example.ozinsenew.presentation.viewmodels.MainViewModel
 import kotlinx.coroutines.launch
 
 @SuppressLint("UnrememberedMutableInteractionSource")
@@ -62,7 +63,7 @@ import kotlinx.coroutines.launch
 fun DetailScreen(
     navController: NavController,
     itemId: Int,
-    viewModel: MainViewModel,
+    homeViewModel: HomeViewModel = hiltViewModel(),
     listViewModel: ListViewModel,
     paddingValues: PaddingValues
 ) {
@@ -76,7 +77,7 @@ fun DetailScreen(
         MaterialTheme.colorScheme.tertiaryContainer.copy(alpha = 0f),
     )
 
-    val box = viewModel.getBoxById(itemId)
+    val box = homeViewModel.getBoxById(itemId)
 
     box?.let {
         LaunchedEffect(itemId) {
